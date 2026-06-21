@@ -18,10 +18,15 @@ class SettingController extends Controller
     private function getDefaults()
     {
         return [
-            'site_name' => 'InovasiTech',
+            'site_name' => 'Codevora',
             'site_logo' => '',
             'site_favicon' => '',
-            'link_rel' => ''
+            'link_rel' => '',
+            'google_analytics_id' => '',
+            'google_tag_manager_id' => '',
+            'meta_description' => '',
+            'meta_keywords' => '',
+            'robots' => 'index, follow'
         ];
     }
 
@@ -49,7 +54,12 @@ class SettingController extends Controller
             'site_name' => 'required|string|max:255',
             'site_logo' => 'nullable|string',
             'site_favicon' => 'nullable|string',
-            'link_rel' => 'nullable|string'
+            'link_rel' => 'nullable|string',
+            'google_analytics_id' => 'nullable|string|max:50',
+            'google_tag_manager_id' => 'nullable|string|max:50',
+            'meta_description' => 'nullable|string|max:320',
+            'meta_keywords' => 'nullable|string|max:500',
+            'robots' => 'nullable|string|max:100'
         ]);
 
         File::ensureDirectoryExists(dirname($this->filePath));
