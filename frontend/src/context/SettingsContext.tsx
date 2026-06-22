@@ -40,7 +40,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   const refreshSettings = useCallback(async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/settings');
+      const res = await fetch('https://codevora.id/api/settings');
       if (res.ok) {
         const json = await res.json();
         if (json.status === 'success' && json.data) {

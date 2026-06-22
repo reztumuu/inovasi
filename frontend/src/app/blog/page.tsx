@@ -12,7 +12,7 @@ interface BlogPost {
 
 async function getPosts(): Promise<BlogPost[]> {
   try {
-    const res = await fetch('http://127.0.0.1:8000/api/posts', { next: { revalidate: 10 } });
+    const res = await fetch('https://codevora.id/api/posts', { next: { revalidate: 10 } });
     if (!res.ok) throw new Error('API server down');
     const json = await res.json();
     return json.data;

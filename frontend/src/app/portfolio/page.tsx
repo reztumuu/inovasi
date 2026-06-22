@@ -13,7 +13,7 @@ interface PortfolioItem {
 
 async function getPortfolios(): Promise<PortfolioItem[]> {
   try {
-    const res = await fetch('http://127.0.0.1:8000/api/portfolios', { next: { revalidate: 10 } });
+    const res = await fetch('https://codevora.id/api/portfolios', { next: { revalidate: 10 } });
     if (!res.ok) throw new Error('API server down');
     const json = await res.json();
     return json.data;

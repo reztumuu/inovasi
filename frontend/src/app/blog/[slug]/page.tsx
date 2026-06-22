@@ -48,7 +48,7 @@ const fallbackPosts: Record<string, BlogPost> = {
 
 async function getPost(slug: string): Promise<BlogPost | null> {
   try {
-    const res = await fetch(`http://127.0.0.1:8000/api/posts/${slug}`, { next: { revalidate: 10 } });
+    const res = await fetch(`https://codevora.id/api/posts/${slug}`, { next: { revalidate: 10 } });
     if (!res.ok) {
       if (res.status === 404) return null;
       throw new Error('API server down');

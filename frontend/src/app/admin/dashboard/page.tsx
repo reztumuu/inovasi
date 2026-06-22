@@ -524,7 +524,7 @@ export default function AdminDashboard() {
     setLeadsLoading(true); setLeadsError('');
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/admin/leads', {
+      const res = await fetch('https://codevora.id/api/admin/leads', {
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       });
       const data = await res.json();
@@ -538,7 +538,7 @@ export default function AdminDashboard() {
     setPortfolioLoading(true); setPortfolioError('');
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/admin/portfolios', {
+      const res = await fetch('https://codevora.id/api/admin/portfolios', {
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       });
       const data = await res.json();
@@ -552,7 +552,7 @@ export default function AdminDashboard() {
     setPostsLoading(true); setPostsError('');
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/admin/posts', {
+      const res = await fetch('https://codevora.id/api/admin/posts', {
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       });
       const data = await res.json();
@@ -566,7 +566,7 @@ export default function AdminDashboard() {
     setServicesLoading(true); setServicesError('');
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/admin/services', {
+      const res = await fetch('https://codevora.id/api/admin/services', {
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       });
       const data = await res.json();
@@ -579,7 +579,7 @@ export default function AdminDashboard() {
   const fetchSettings = useCallback(async () => {
     setSettingsLoading(true); setSettingsError('');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/settings');
+      const res = await fetch('https://codevora.id/api/settings');
       const data = await res.json();
       if (res.ok && data.status === 'success') {
         setSettingsForm({
@@ -615,7 +615,7 @@ export default function AdminDashboard() {
     setUpdatingId(id);
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/admin/leads/${id}/status`, {
+      const res = await fetch(`https://codevora.id/api/admin/leads/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, Accept: 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -634,7 +634,7 @@ export default function AdminDashboard() {
       onConfirm: async () => {
         const token = localStorage.getItem('admin_token');
         try {
-          const res = await fetch(`http://127.0.0.1:8000/api/admin/leads/${id}`, {
+          const res = await fetch(`https://codevora.id/api/admin/leads/${id}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
           });
@@ -651,8 +651,8 @@ export default function AdminDashboard() {
     const token = localStorage.getItem('admin_token');
     const editing = portfolioModal.item;
     const url = editing
-      ? `http://127.0.0.1:8000/api/admin/portfolios/${editing.id}`
-      : 'http://127.0.0.1:8000/api/admin/portfolios';
+      ? `https://codevora.id/api/admin/portfolios/${editing.id}`
+      : 'https://codevora.id/api/admin/portfolios';
     const method = editing ? 'PUT' : 'POST';
 
     const res = await fetch(url, {
@@ -674,7 +674,7 @@ export default function AdminDashboard() {
       onConfirm: async () => {
         const token = localStorage.getItem('admin_token');
         try {
-          const res = await fetch(`http://127.0.0.1:8000/api/admin/portfolios/${id}`, {
+          const res = await fetch(`https://codevora.id/api/admin/portfolios/${id}`, {
             method: 'DELETE', headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
           });
           const data = await res.json();
@@ -690,8 +690,8 @@ export default function AdminDashboard() {
     const token = localStorage.getItem('admin_token');
     const editing = postModal.item;
     const url = editing
-      ? `http://127.0.0.1:8000/api/admin/posts/${editing.id}`
-      : 'http://127.0.0.1:8000/api/admin/posts';
+      ? `https://codevora.id/api/admin/posts/${editing.id}`
+      : 'https://codevora.id/api/admin/posts';
     const method = editing ? 'PUT' : 'POST';
 
     const res = await fetch(url, {
@@ -713,7 +713,7 @@ export default function AdminDashboard() {
       onConfirm: async () => {
         const token = localStorage.getItem('admin_token');
         try {
-          const res = await fetch(`http://127.0.0.1:8000/api/admin/posts/${id}`, {
+          const res = await fetch(`https://codevora.id/api/admin/posts/${id}`, {
             method: 'DELETE', headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
           });
           const data = await res.json();
@@ -729,8 +729,8 @@ export default function AdminDashboard() {
     const token = localStorage.getItem('admin_token');
     const editing = serviceModal.item;
     const url = editing
-      ? `http://127.0.0.1:8000/api/admin/services/${editing.id}`
-      : 'http://127.0.0.1:8000/api/admin/services';
+      ? `https://codevora.id/api/admin/services/${editing.id}`
+      : 'https://codevora.id/api/admin/services';
     const method = editing ? 'PUT' : 'POST';
 
     const res = await fetch(url, {
@@ -752,7 +752,7 @@ export default function AdminDashboard() {
       onConfirm: async () => {
         const token = localStorage.getItem('admin_token');
         try {
-          const res = await fetch(`http://127.0.0.1:8000/api/admin/services/${id}`, {
+          const res = await fetch(`https://codevora.id/api/admin/services/${id}`, {
             method: 'DELETE', headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
           });
           const data = await res.json();
@@ -776,7 +776,7 @@ export default function AdminDashboard() {
 
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/admin/upload', {
+      const res = await fetch('https://codevora.id/api/admin/upload', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -810,7 +810,7 @@ export default function AdminDashboard() {
 
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/admin/upload', {
+      const res = await fetch('https://codevora.id/api/admin/upload', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -837,7 +837,7 @@ export default function AdminDashboard() {
     setSettingsLoading(true); setSettingsError(''); setSettingsSuccess('');
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/admin/settings', {
+      const res = await fetch('https://codevora.id/api/admin/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, Accept: 'application/json' },
         body: JSON.stringify(settingsForm),
@@ -861,7 +861,7 @@ export default function AdminDashboard() {
   const handleLogoutAction = async () => {
     const token = localStorage.getItem('admin_token');
     try {
-      await fetch('http://127.0.0.1:8000/api/logout', {
+      await fetch('https://codevora.id/api/logout', {
         method: 'POST', headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       });
     } catch { /* silent */ }

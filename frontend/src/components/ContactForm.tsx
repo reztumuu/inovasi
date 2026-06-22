@@ -21,7 +21,7 @@ export default function ContactForm() {
     setStatus('loading');
     setResponseMsg('');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/leads', {
+      const res = await fetch('https://codevora.id/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(form),
