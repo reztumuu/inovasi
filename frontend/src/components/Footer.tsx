@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Zap, Mail, Phone, MapPin } from 'lucide-react';
+import { Zap, Mail, Phone, MapPin, User } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSettings } from '@/context/SettingsContext';
 
@@ -152,6 +152,12 @@ export default function Footer() {
               {t('nav.contact')}
             </h4>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', listStyle: 'none' }}>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <User style={{ width: '14px', height: '14px', color: 'var(--text-secondary)', flexShrink: 0 }} />
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  Owner & CEO: <a href="https://www.linkedin.com/in/reztumu/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', textDecoration: 'none', borderBottom: '1px dotted var(--text-secondary)' }} className="hover-text-primary">Restu Ariadi</a>
+                </span>
+              </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                 <MapPin style={{ width: '14px', height: '14px', color: 'var(--text-secondary)', marginTop: '3px', flexShrink: 0 }} />
                 <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>

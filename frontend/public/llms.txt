@@ -1,0 +1,31 @@
+# Codevora - PT INOVASI DIGITAL ASIA
+
+Codevora is a premium software engineering studio based in Indonesia, specializing in custom web systems, mobile application development, UI/UX design, cloud architecture, and AI automation.
+
+## Core Services
+
+- [Web Development](https://codevora.id/#services): Custom SaaS platforms, corporate portals, e-commerce, and enterprise dashboard solutions built using Next.js, React, Node.js, and Laravel.
+- [Mobile App Development](https://codevora.id/#services): High-performance cross-platform iOS and Android applications powered by React Native and Flutter.
+- [UI/UX Design](https://codevora.id/#services): Human-centered design systems, high-fidelity prototypes, and conversions-focused UX audits.
+- [Cloud & DevOps](https://codevora.id/#services): Scalable AWS, GCP, and DigitalOcean architectures, CI/CD automated deployment pipelines, and Docker/Kubernetes container orchestration.
+- [AI & Automation](https://codevora.id/#services): Custom AI workflow integrations, intelligent chatbots, Natural Language Processing (NLP) engines, and task automation.
+
+## Main Navigation
+
+- [Home](https://codevora.id/): Overview of services, client testimonials, tech stack, and proposal submission form.
+- [Portfolio](https://codevora.id/portfolio): Case studies and technical examples of custom web apps, marketplaces, and secure cloud infrastructures.
+- [Blog](https://codevora.id/blog): Engineering perspectives, tech insights, architecture deep-dives, and guides.
+- [Privacy Policy](https://codevora.id/privacy): Policy regarding data protection, UU PDP compliance, client data security, and NDA guarantees.
+- [Terms of Service](https://codevora.id/terms): Legal and services agreement details, payment milestones, source code ownership handover, and SLAs.
+
+## Company Details
+
+- **Legal Entity**: PT INOVASI DIGITAL ASIA
+- **Founder & CEO**: Restu Ariadi
+- **Email**: hello@codevora.id
+- **Phone**: +62 81222054811
+- **Address**: Cibiru Cipacing, JL Raya Jatinangor, Sumedang, Jawa Barat, Indonesia
+- **Socials**:
+  - GitHub: https://github.com/reztumuu
+  - LinkedIn: https://www.linkedin.com/in/reztumu/
+  - Telegram: https://t.me/gamingku

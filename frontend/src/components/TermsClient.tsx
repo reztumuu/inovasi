@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FileText, Mail, Calendar, ArrowLeft } from 'lucide-react';
+import { FileText, Mail, Calendar, ArrowLeft, Phone, User } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -192,6 +192,16 @@ export default function TermsClient() {
                       <strong style={{ color: 'var(--text-primary)' }}>PT INOVASI DIGITAL ASIA (Codevora)</strong>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <User style={{ width: '14px', height: '14px', color: 'var(--text-accent)' }} />
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                        Owner & CEO: <strong>Restu Ariadi</strong>
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Phone style={{ width: '14px', height: '14px', color: 'var(--text-accent)' }} />
+                      <a href="tel:+6281222054811" style={{ color: 'var(--text-accent)', textDecoration: 'none' }}>+62 81222054811</a>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Mail style={{ width: '14px', height: '14px', color: 'var(--text-accent)' }} />
                       <a href="mailto:hello@codevora.id" style={{ color: 'var(--text-accent)', textDecoration: 'none' }}>hello@codevora.id</a>
                     </div>
@@ -319,6 +329,16 @@ export default function TermsClient() {
                   >
                     <div>
                       <strong style={{ color: 'var(--text-primary)' }}>PT INOVASI DIGITAL ASIA (Codevora)</strong>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <User style={{ width: '14px', height: '14px', color: 'var(--text-accent)' }} />
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                        Pemilik & CEO: <strong>Restu Ariadi</strong>
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Phone style={{ width: '14px', height: '14px', color: 'var(--text-accent)' }} />
+                      <a href="tel:+6281222054811" style={{ color: 'var(--text-accent)', textDecoration: 'none' }}>+62 81222054811</a>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Mail style={{ width: '14px', height: '14px', color: 'var(--text-accent)' }} />

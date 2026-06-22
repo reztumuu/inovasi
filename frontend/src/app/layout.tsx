@@ -115,10 +115,88 @@ export default async function RootLayout({
 }>) {
   const settings = await getSettings();
 
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": settings?.site_name || "Codevora",
+      "legalName": "PT INOVASI DIGITAL ASIA",
+      "url": "https://codevora.id",
+      "logo": settings?.site_logo || "https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png",
+      "image": settings?.site_logo || "https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png",
+      "description": settings?.meta_description || "Expert web development, mobile app, cloud & AI solutions for modern businesses. Your trusted digital partner for scalable and innovative technology.",
+      "telephone": "+62 81222054811",
+      "email": "hello@codevora.id",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Cibiru Cipacing, JL Raya Jatinangor",
+        "addressLocality": "Sumedang",
+        "addressRegion": "Jawa Barat",
+        "postalCode": "45363",
+        "addressCountry": "ID"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "-6.9388",
+        "longitude": "107.7718"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "09:00",
+        "closes": "18:00"
+      },
+      "sameAs": [
+        "https://github.com/reztumuu",
+        "https://www.linkedin.com/in/reztumu/",
+        "https://t.me/gamingku"
+      ],
+      "priceRange": "$$",
+      "founder": {
+        "@type": "Person",
+        "name": "Restu Ariadi",
+        "jobTitle": "Owner & CEO",
+        "telephone": "+62 81222054811",
+        "url": "https://www.linkedin.com/in/reztumu/",
+        "sameAs": [
+          "https://www.linkedin.com/in/reztumu/",
+          "https://github.com/reztumuu"
+        ]
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Restu Ariadi",
+      "jobTitle": "Owner & CEO",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "PT INOVASI DIGITAL ASIA",
+        "sameAs": "https://codevora.id"
+      },
+      "url": "https://www.linkedin.com/in/reztumu/",
+      "telephone": "+62 81222054811",
+      "sameAs": [
+        "https://www.linkedin.com/in/reztumu/",
+        "https://github.com/reztumuu"
+      ]
+    }
+  ];
+
   return (
     <html lang="en">
       <head>
         {settings?.link_rel && parseLinkRel(settings.link_rel)}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Providers initialSettings={settings}>

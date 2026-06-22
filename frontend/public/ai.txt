@@ -1,0 +1,4 @@
+User-agent: *
+Allow-Crawling: Yes
+Allow-Training: Yes
+Allow-RAG: Yes
