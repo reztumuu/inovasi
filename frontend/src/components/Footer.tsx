@@ -179,16 +179,20 @@ export default function Footer() {
             © {year} {settings.site_name || 'Codevora'}. {t('footer.rights')}
           </p>
           <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-            {['Privacy Policy', 'Terms of Service'].map(label => (
-              <a
-                key={label}
-                href="#"
-                className="footer-link"
-                style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}
-              >
-                {label}
-              </a>
-            ))}
+            <Link
+              href="/privacy"
+              className="footer-link"
+              style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              className="footer-link"
+              style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}
+            >
+              Terms of Service
+            </Link>
           </div>
         </div>
       </div>
