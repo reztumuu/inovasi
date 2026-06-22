@@ -34,9 +34,9 @@ const defaultSettings: Settings = {
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
-  const [loading, setLoading] = useState<boolean>(true);
+export function SettingsProvider({ children, initialSettings }: { children: React.ReactNode, initialSettings?: Settings }) {
+  const [settings, setSettings] = useState<Settings>(initialSettings || defaultSettings);
+  const [loading, setLoading] = useState<boolean>(!initialSettings);
 
   const refreshSettings = useCallback(async () => {
     try {

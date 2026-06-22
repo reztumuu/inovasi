@@ -59,9 +59,9 @@ export function useTheme() {
   return context;
 }
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({ children, initialSettings }: { children: React.ReactNode, initialSettings?: any }) {
   return (
-    <SettingsProvider>
+    <SettingsProvider initialSettings={initialSettings}>
       <SeoScripts />
       <GtmNoscript />
       <DynamicMeta />
