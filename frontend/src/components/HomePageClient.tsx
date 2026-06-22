@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Globe, Smartphone, Palette, Cloud, Cpu,
   ArrowRight, Star, Code2, Layers, GitMerge,
-  Shield, Database, Terminal
+  Shield, Database, Terminal, Rocket, Gem, Zap
 } from 'lucide-react';
 import ContactForm from '@/components/ContactForm';
 import { useLanguage } from '@/context/LanguageContext';
@@ -38,9 +38,78 @@ const iconMap: Record<string, React.ComponentType<{ style?: React.CSSProperties 
   Code2, Shield, Database, Layers, Terminal
 };
 
+function AnimatedCounter({ value, startTrigger }: { value: string; startTrigger: boolean }) {
+  const numericMatch = value.match(/^([\d.]+)/);
+  const suffix = value.replace(/^[\d.]+/, '');
+  const target = numericMatch ? parseFloat(numericMatch[1]) : 0;
+  
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    if (!startTrigger) {
+      setCount(0);
+      return;
+    }
+    
+    const duration = 1500; // 1.5 seconds animation
+    const startTime = performance.now();
+    let animationFrameId: number;
+    
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      const easeProgress = progress * (2 - progress);
+      const currentVal = easeProgress * target;
+      
+      const isFloat = target % 1 !== 0;
+      const formattedVal = isFloat ? currentVal.toFixed(1) : Math.floor(currentVal).toString();
+      
+      setCount(parseFloat(formattedVal));
+      
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        setCount(target);
+      }
+    };
+    
+    animationFrameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [target, startTrigger]);
+  
+  const isFloat = target % 1 !== 0;
+  const displayVal = isFloat ? count.toFixed(1) : Math.floor(count);
+  
+  return (
+    <span>
+      {displayVal}
+      {suffix}
+    </span>
+  );
+}
+
 export default function HomePageClient({ services, portfolios }: HomePageClientProps) {
   const { t } = useLanguage();
   const { settings } = useSettings();
+
+  const [statsVisible, setStatsVisible] = useState(false);
+  const statsSectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStatsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (statsSectionRef.current) {
+      observer.observe(statsSectionRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
 
   const getLocalizedService = (service: ServiceItem) => {
     const tName = service.title.toLowerCase();
@@ -164,7 +233,9 @@ export default function HomePageClient({ services, portfolios }: HomePageClientP
                     borderRadius: '4px',
                   }}
                 >
-                  <div className="stat-number" style={{ marginBottom: '6px' }}>{s.value}</div>
+                  <div className="stat-number" style={{ marginBottom: '6px' }}>
+                    <AnimatedCounter value={s.value} startTrigger={true} />
+                  </div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.label}</div>
                 </div>
               ))}
@@ -304,6 +375,7 @@ export default function HomePageClient({ services, portfolios }: HomePageClientP
       <section style={{ padding: '100px 0', borderBottom: '1px solid var(--border-default)' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
           <div
+            ref={statsSectionRef}
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -315,27 +387,34 @@ export default function HomePageClient({ services, portfolios }: HomePageClientP
             }}
           >
             {[
-              { value: '150+', label: t('statsStrip.completed'), icon: '🚀' },
-              { value: '99.8%', label: t('statsStrip.retention'), icon: '💎' },
-              { value: '12+', label: t('statsStrip.served'), icon: '🌏' },
-              { value: '45+', label: t('statsStrip.senior'), icon: '⚡' },
-            ].map((stat, i) => (
-              <div
-                key={i}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  padding: '32px 16px',
-                  background: 'var(--bg-surface)',
-                }}
-              >
-                <div style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{stat.icon}</div>
-                <div className="stat-number" style={{ marginBottom: '6px' }}>{stat.value}</div>
-                <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{stat.label}</div>
-              </div>
-            ))}
+              { value: '150+', label: t('statsStrip.completed'), icon: Rocket, color: 'var(--accent-violet)' },
+              { value: '99.8%', label: t('statsStrip.retention'), icon: Gem, color: 'var(--accent-cyan)' },
+              { value: '12+', label: t('statsStrip.served'), icon: Globe, color: 'var(--accent-emerald)' },
+              { value: '45+', label: t('statsStrip.senior'), icon: Zap, color: 'var(--accent-amber)' },
+            ].map((stat, i) => {
+              const Icon = stat.icon;
+              return (
+                <div
+                  key={i}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    padding: '32px 16px',
+                    background: 'var(--bg-surface)',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: '50%', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', marginBottom: '12px' }}>
+                    <Icon style={{ width: '16px', height: '16px', color: stat.color }} />
+                  </div>
+                  <div className="stat-number" style={{ marginBottom: '6px' }}>
+                    <AnimatedCounter value={stat.value} startTrigger={statsVisible} />
+                  </div>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{stat.label}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
