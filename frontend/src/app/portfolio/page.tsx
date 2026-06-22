@@ -48,7 +48,7 @@ async function getPortfolios(): Promise<PortfolioItem[]> {
 }
 
 export const metadata = {
-  title: 'Portfolio | InovasiTech Engineering Works',
+  title: 'Portfolio',
   description: 'Explore our portfolio of premium web systems, mobile applications, and secure cloud solutions.',
 };
 

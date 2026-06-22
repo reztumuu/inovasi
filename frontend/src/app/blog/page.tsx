@@ -50,7 +50,7 @@ async function getPosts(): Promise<BlogPost[]> {
 }
 
 export const metadata = {
-  title: 'Tech Insights & Blog | InovasiTech',
+  title: 'Tech Insights & Blog',
   description: 'Stay updated with the latest software engineering trends, architectural patterns, and tech advice.',
 };
 

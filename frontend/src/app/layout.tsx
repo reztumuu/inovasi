@@ -4,12 +4,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Providers from "@/components/Providers";
 
+export const dynamic = 'force-dynamic';
+
 async function getSettings() {
   try {
-    const res = await fetch('http://127.0.0.1/api/settings', {
-      headers: {
-        Host: 'codevora.id',
-      },
+    const res = await fetch('https://codevora.id/api/settings', {
       next: { revalidate: 10 },
     });
     if (res.ok) {
@@ -22,6 +21,32 @@ async function getSettings() {
     console.error("Failed to fetch settings on server:", err);
   }
   return null;
+}
+
+function parseLinkRel(html: string) {
+  if (!html) return null;
+  const linkReg = /<link\s+([^>]+?)\s*\/?>/gi;
+  const attrReg = /(\w+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
+  const links: any[] = [];
+  
+  let match;
+  while ((match = linkReg.exec(html)) !== null) {
+    const attrString = match[1];
+    const attrs: any = {};
+    let attrMatch;
+    attrReg.lastIndex = 0;
+    while ((attrMatch = attrReg.exec(attrString)) !== null) {
+      const name = attrMatch[1];
+      const value = attrMatch[2] ?? attrMatch[3] ?? attrMatch[4];
+      attrs[name] = value;
+    }
+    links.push(attrs);
+  }
+  
+  return links.map((attrs, idx) => {
+    const className = attrs.class ? `${attrs.class} injected-setting-rel` : 'injected-setting-rel';
+    return <link key={idx} {...attrs} className={className} />;
+  });
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -92,7 +117,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <head />
+      <head>
+        {settings?.link_rel && parseLinkRel(settings.link_rel)}
+      </head>
       <body style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Providers initialSettings={settings}>
           <Header />
@@ -105,3 +132,4 @@ export default async function RootLayout({
     </html>
   );
 }
+
