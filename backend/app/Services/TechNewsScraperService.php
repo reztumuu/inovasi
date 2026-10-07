@@ -110,7 +110,8 @@ class TechNewsScraperService
                 }
 
                 // Build rich article content
-                $content = $this->buildAntaraContent($title, $cleanDesc, $link);
+                $articleData = $this->fetchAntaraFullArticle($link, $title, $cleanDesc);
+                $content = $articleData['content'];
                 $summary = Str::limit($cleanDesc, 260, '...');
 
                 $slug = Str::slug($title);
@@ -184,7 +185,7 @@ class TechNewsScraperService
                     continue;
                 }
 
-                // Fetch full article markdown
+                $artUrl = $art['url'] ?? "https://dev.to";
                 $artId = $art['id'] ?? null;
                 $markdown = '';
                 if ($artId) {
@@ -203,15 +204,18 @@ class TechNewsScraperService
 
                 $description = trim($art['description'] ?? '');
                 if (empty($markdown)) {
-                    $markdown = $description . "\n\nArtikel ini membahas perkembangan teknologi terkini dan dampaknya pada industri digital modern.";
+                    $markdown = $description . "\n\n## Overview\n\nThis article examines current technological developments and software engineering patterns in modern distributed ecosystems.";
                 }
+
+                // Append official credit with clean markdown link
+                $author = $art['user']['name'] ?? 'Dev.to Tech';
+                $markdown .= "\n\n---\n\n*Original article published by [{$author} on Dev.to]({$artUrl})*";
 
                 $imageUrl = $art['cover_image'] ?? $art['social_image'] ?? '';
                 if (empty($imageUrl)) {
                     $imageUrl = self::$fallbackImages[array_rand(self::$fallbackImages)];
                 }
 
-                $author = $art['user']['name'] ?? 'Dev.to Tech';
                 $summary = Str::limit($description, 260, '...');
 
                 $slug = Str::slug($title);
@@ -245,18 +249,89 @@ class TechNewsScraperService
     }
 
     /**
-     * Build informative multi-paragraph content from Antara RSS item.
+     * Fetch and build structured article from Antara website.
      */
-    private function buildAntaraContent(string $title, string $desc, string $sourceUrl): string
+    private function fetchAntaraFullArticle(string $url, string $title, string $desc): array
     {
-        $paragraphs = [];
-        $paragraphs[] = "### Ringkasan Informasi\n\n" . $desc;
-        $paragraphs[] = "Perkembangan pesat di bidang teknologi dan kecerdasan buatan terus mengubah cara hidup masyarakat dan ekosistem industri modern. Pemahaman yang mendalam mengenai inovasi digital menjadi kunci untuk mengoptimalkan potensi serta menjaga keamanan data dalam aktivitas sehari-hari.";
-        $paragraphs[] = "Melalui inovasi yang terus bertumbuh, adopsi teknologi mutakhir diharapkan mampu memberikan solusi praktis, efisien, dan berdaya saing tinggi bagi masyarakat maupun dunia usaha di era serba terhubung saat ini.";
-        if (!empty($sourceUrl)) {
-            $paragraphs[] = "*Sumber referensi berita: [ANTARA News](" . $sourceUrl . ")*";
+        $content = '';
+        $videoId = null;
+
+        try {
+            $res = Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Accept' => 'text/html,application/xhtml+xml',
+            ])->timeout(10)->get($url);
+
+            if ($res->ok()) {
+                $html = $res->body();
+
+                // Check for YouTube Video Embed
+                if (preg_match('/(?:youtube\.com\/(?:embed\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i', $html, $vMatch)) {
+                    $videoId = $vMatch[1];
+                }
+
+                preg_match_all('/<p>(.*?)<\/p>/s', $html, $matches);
+                $validParagraphs = [];
+                foreach ($matches[1] as $p) {
+                    $text = trim(strip_tags($p));
+                    if (
+                        strlen($text) > 40 &&
+                        !str_starts_with($text, 'Baca juga') &&
+                        !str_starts_with($text, 'Pewarta') &&
+                        !str_starts_with($text, 'Editor') &&
+                        !str_starts_with($text, 'Copyright') &&
+                        !str_starts_with($text, 'Foto:')
+                    ) {
+                        $validParagraphs[] = $text;
+                    }
+                }
+
+                if (count($validParagraphs) >= 2) {
+                    $sections = [];
+                    if ($videoId) {
+                        $sections[] = "<!-- FLAMES_YOUTUBE_VIDEO_ID:{$videoId} -->";
+                    }
+
+                    $opening = array_slice($validParagraphs, 0, 2);
+                    $sections[] = implode("\n\n", $opening);
+
+                    if (count($validParagraphs) > 2) {
+                        $sections[] = "## Pembahasan & Fakta Utama";
+                        $mid = array_slice($validParagraphs, 2, 4);
+                        $sections[] = implode("\n\n", $mid);
+                    }
+
+                    if (count($validParagraphs) > 6) {
+                        $sections[] = "## Dampak & Informasi Lanjutan";
+                        $rest = array_slice($validParagraphs, 6, 5);
+                        $sections[] = implode("\n\n", $rest);
+                    }
+
+                    $sections[] = "## Kesimpulan";
+                    $sections[] = "Perkembangan informasi teknologi seperti ini penting untuk dipahami agar kita senantiasa waspada dan dapat memanfaatkan teknologi secara tepat, aman, dan optimal.";
+                    $sections[] = "---\n\n*Sumber berita resmi: [ANTARA News Tekno]({$url})*";
+
+                    $content = implode("\n\n", $sections);
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning("Fetch full Antara failed: " . $e->getMessage());
         }
 
-        return implode("\n\n", $paragraphs);
+        if (empty($content)) {
+            $sections = [];
+            if ($videoId) {
+                $sections[] = "<!-- FLAMES_YOUTUBE_VIDEO_ID:{$videoId} -->";
+            }
+            $sections[] = $desc;
+            $sections[] = "## Poin Penting";
+            $sections[] = "- Pemahaman terhadap perkembangan teknologi terkini membantu menjaga keamanan data dan perangkat pribadi.\n- Pastikan selalu memverifikasi informasi dan mempraktikkan langkah keamanan yang direkomendasikan para ahli.";
+            $sections[] = "## Kesimpulan";
+            $sections[] = "Di tengah arus digitalisasi yang kian cepat, edukasi teknologi menjadi pilar utama untuk aktivitas digital yang aman dan produktif.";
+            $sections[] = "---\n\n*Sumber berita resmi: [ANTARA News Tekno]({$url})*";
+            $content = implode("\n\n", $sections);
+        }
+
+        return ['content' => $content, 'video_id' => $videoId];
     }
 }

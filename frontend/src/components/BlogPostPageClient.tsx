@@ -20,6 +20,138 @@ interface BlogPostPageClientProps {
   post: BlogPost;
 }
 
+function extractYoutubeId(text: string): string | null {
+  const commentMatch = text.match(/<!--\s*(?:FLAMES_)?YOUTUBE(?:_VIDEO)?_ID:([a-zA-Z0-9_-]+)\s*-->/i);
+  if (commentMatch) return commentMatch[1];
+
+  const urlMatch = text.match(/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i);
+  if (urlMatch) return urlMatch[1];
+
+  return null;
+}
+
+function VideoEmbed({ videoId }: { videoId: string }) {
+  return (
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        paddingBottom: '56.25%',
+        margin: '28px 0',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        border: '1px solid var(--border-default)',
+        background: '#000',
+        boxShadow: 'var(--shadow-card)',
+      }}
+    >
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
+        title="YouTube Video Player"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          border: 'none',
+        }}
+      />
+    </div>
+  );
+}
+
+function renderInlineText(text: string): React.ReactNode[] {
+  const regex = /(\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`|(https?:\/\/[^\s<]+))/g;
+  const elements: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      elements.push(text.slice(lastIndex, match.index));
+    }
+
+    if (match[2] && match[3]) {
+      const linkText = match[2];
+      const linkUrl = match[3];
+      const isInternal = linkUrl.startsWith('/') || linkUrl.startsWith('https://codevora.id');
+      elements.push(
+        <a
+          key={match.index}
+          href={linkUrl}
+          target={isInternal ? undefined : '_blank'}
+          rel={isInternal ? undefined : 'noopener noreferrer'}
+          style={{
+            color: 'var(--accent-cyan, #0ea5e9)',
+            textDecoration: 'underline',
+            textUnderlineOffset: '3px',
+            fontWeight: 600,
+          }}
+          className="hover-text-primary"
+        >
+          {linkText}
+        </a>
+      );
+    } else if (match[4]) {
+      elements.push(
+        <strong key={match.index} style={{ color: 'var(--text-primary)', fontWeight: 700 }}>
+          {match[4]}
+        </strong>
+      );
+    } else if (match[5]) {
+      elements.push(
+        <em key={match.index} style={{ fontStyle: 'italic' }}>
+          {match[5]}
+        </em>
+      );
+    } else if (match[6]) {
+      elements.push(
+        <code
+          key={match.index}
+          style={{
+            background: 'var(--bg-elevated)',
+            padding: '2px 6px',
+            borderRadius: '4px',
+            fontSize: '0.85em',
+            border: '1px solid var(--border-subtle)',
+          }}
+        >
+          {match[6]}
+        </code>
+      );
+    } else if (match[7]) {
+      const url = match[7];
+      elements.push(
+        <a
+          key={match.index}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: 'var(--accent-cyan, #0ea5e9)',
+            textDecoration: 'underline',
+            textUnderlineOffset: '3px',
+            wordBreak: 'break-all',
+          }}
+        >
+          {url}
+        </a>
+      );
+    }
+
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    elements.push(text.slice(lastIndex));
+  }
+
+  return elements;
+}
+
 export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
   const { t, language } = useLanguage();
 
@@ -31,7 +163,7 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
     });
   };
 
-  const paragraphs = post.content.split('\n\n');
+  const blocks = post.content.split(/\n{2,}/);
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-base)', transition: 'background-color 0.3s ease', overflowX: 'hidden' }}>
@@ -124,36 +256,99 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
 
         {/* Body Content */}
         <div itemProp="articleBody" className="prose-custom">
-          {paragraphs.map((para, i) => {
-            if (para.startsWith('### ')) {
-              return <h3 key={i}>{para.replace('### ', '')}</h3>;
+          {blocks.map((rawBlock, i) => {
+            const videoId = extractYoutubeId(rawBlock);
+            let block = rawBlock.replace(/<!--\s*(?:FLAMES_)?YOUTUBE(?:_VIDEO)?_ID:([a-zA-Z0-9_-]+)\s*-->/gi, '').trim();
+
+            if (block.match(/^https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/\S+$/i)) {
+              block = '';
             }
-            if (para.startsWith('1. ') || para.startsWith('- ')) {
-              return (
-                <ul key={i}>
-                  {para.split('\n').map((li, li_i) => (
-                    <li key={li_i}>{li.replace(/^[-\d\.\s]+/, '').replace(/\*\*(.*?)\*\*/g, '$1')}</li>
-                  ))}
-                </ul>
+
+            const videoElement = videoId ? <VideoEmbed key={`vid-${i}`} videoId={videoId} /> : null;
+            if (!block) {
+              return videoElement;
+            }
+
+            let contentElement: React.ReactNode = null;
+
+            if (block.startsWith('#### ')) {
+              contentElement = (
+                <h4 key={`h4-${i}`} style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '22px', marginBottom: '8px' }}>
+                  {renderInlineText(block.slice(5).trim())}
+                </h4>
               );
-            }
-            if (para.startsWith('```')) {
-              const lines = para.split('\n');
-              return (
-                <pre key={i}>
+            } else if (block.startsWith('### ')) {
+              contentElement = (
+                <h3 key={`h3-${i}`} style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '28px', marginBottom: '12px', lineHeight: 1.35 }}>
+                  {renderInlineText(block.slice(4).trim())}
+                </h3>
+              );
+            } else if (block.startsWith('## ')) {
+              contentElement = (
+                <h2 key={`h2-${i}`} style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '36px', marginBottom: '14px', letterSpacing: '-0.02em', lineHeight: 1.3 }}>
+                  {renderInlineText(block.slice(3).trim())}
+                </h2>
+              );
+            } else if (block.startsWith('# ')) {
+              contentElement = (
+                <h2 key={`h1-${i}`} style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '36px', marginBottom: '16px', letterSpacing: '-0.025em', lineHeight: 1.25 }}>
+                  {renderInlineText(block.slice(2).trim())}
+                </h2>
+              );
+            } else if (block.startsWith('---') || block.startsWith('***')) {
+              const afterHr = block.replace(/^[-*]{3,}\s*/, '').trim();
+              contentElement = (
+                <React.Fragment key={`hr-${i}`}>
+                  <hr style={{ border: 'none', borderTop: '1px solid var(--border-default)', margin: '36px 0' }} />
+                  {afterHr && (
+                    <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '20px' }}>
+                      {renderInlineText(afterHr)}
+                    </p>
+                  )}
+                </React.Fragment>
+              );
+            } else if (block.startsWith('```')) {
+              const lines = block.split('\n');
+              contentElement = (
+                <pre key={`pre-${i}`} style={{ background: 'var(--bg-elevated)', padding: '16px', borderRadius: '6px', overflowX: 'auto', border: '1px solid var(--border-subtle)', margin: '20px 0', fontSize: '0.88rem' }}>
                   <code>{lines.slice(1, -1).join('\n')}</code>
                 </pre>
               );
+            } else if (block.startsWith('> ')) {
+              const quote = block.replace(/^>\s*/gm, '');
+              contentElement = (
+                <blockquote key={`bq-${i}`} style={{ borderLeft: '3px solid var(--text-primary)', padding: '14px 18px', margin: '24px 0', color: 'var(--text-secondary)', fontStyle: 'italic', background: 'var(--bg-surface)', borderRadius: '0 4px 4px 0' }}>
+                  {renderInlineText(quote)}
+                </blockquote>
+              );
+            } else if (block.startsWith('- ') || block.startsWith('* ') || block.match(/^\d+\.\s+/)) {
+              const lines = block.split('\n');
+              contentElement = (
+                <ul key={`ul-${i}`} style={{ paddingLeft: '22px', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {lines.map((li, liIndex) => {
+                    const cleanLi = li.replace(/^([-*]|\d+\.)\s+/, '').trim();
+                    return (
+                      <li key={liIndex} style={{ fontSize: '0.96rem', color: 'var(--text-secondary)', lineHeight: 1.65 }}>
+                        {renderInlineText(cleanLi)}
+                      </li>
+                    );
+                  })}
+                </ul>
+              );
+            } else {
+              contentElement = (
+                <p key={`p-${i}`} style={{ fontSize: '1rem', color: 'var(--text-secondary)', lineHeight: 1.75, marginBottom: '20px' }}>
+                  {renderInlineText(block)}
+                </p>
+              );
             }
-            
-            // Bold text styling mapping
-            const withBold = para.split(/(\*\*.*?\*\*)/).map((part, pi) => {
-              if (part.startsWith('**') && part.endsWith('**')) {
-                return <strong key={pi} style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{part.slice(2, -2)}</strong>;
-              }
-              return part;
-            });
-            return <p key={i}>{withBold}</p>;
+
+            return (
+              <React.Fragment key={i}>
+                {videoElement}
+                {contentElement}
+              </React.Fragment>
+            );
           })}
         </div>
 
