@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->longText('content');
             $table->text('summary');
-            $table->string('image_url');
+            $table->text('image_url');
             $table->string('author_name')->default('Admin');
             $table->timestamps();
         });

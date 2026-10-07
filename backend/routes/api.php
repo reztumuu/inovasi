@@ -45,6 +45,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // CRUD Endpoints for core resources
     Route::apiResource('admin/services', ServiceController::class);
     Route::apiResource('admin/portfolios', PortfolioController::class);
+    Route::post('/admin/posts/scrape', [PostController::class, 'scrape']);
+    Route::get('/admin/posts/scraper-status', [PostController::class, 'scraperStatus']);
     Route::apiResource('admin/posts', PostController::class);
     
     // Settings & uploads

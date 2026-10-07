@@ -37,7 +37,12 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
     <div style={{ minHeight: '100vh', background: 'var(--bg-base)', transition: 'background-color 0.3s ease', overflowX: 'hidden' }}>
       {/* Hero Image Banner */}
       <div style={{ position: 'relative', width: '100%', height: 'clamp(260px, 40vh, 400px)', overflow: 'hidden' }}>
-        <img src={post.image_url} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <img
+          src={post.image_url}
+          alt={post.title}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          loading="eager"
+        />
         <div style={{
           position: 'absolute', inset: 0,
           background: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%)',
@@ -45,7 +50,11 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
       </div>
 
       {/* Content Container */}
-      <article style={{ maxWidth: '760px', margin: '0 auto', padding: '0 24px 100px', position: 'relative' }}>
+      <article
+        itemScope
+        itemType="https://schema.org/BlogPosting"
+        style={{ maxWidth: '760px', margin: '0 auto', padding: '0 24px 100px', position: 'relative' }}
+      >
         {/* Meta Header Card */}
         <div
           className="solid-card"
@@ -68,6 +77,7 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
           </Link>
 
           <h1
+            itemProp="headline"
             style={{
               fontSize: 'clamp(1.5rem, 4vw, 2.2rem)',
               fontWeight: 800,
@@ -81,32 +91,39 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
           </h1>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', paddingTop: '16px', borderTop: '1px solid var(--border-subtle)' }}>
-            {[
-              { Icon: Calendar, label: formatDate(post.created_at) },
-              { Icon: User, label: post.author_name },
-              { Icon: Clock, label: `5 ${t('blogPage.readTime')}` },
-            ].map(({ Icon, label }, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                <Icon style={{ width: '14px', height: '14px', color: 'var(--text-primary)' }} />
-                {label}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+              <Calendar style={{ width: '14px', height: '14px', color: 'var(--text-primary)' }} />
+              <time itemProp="datePublished" dateTime={post.created_at}>{formatDate(post.created_at)}</time>
+            </div>
+            {post.author_name && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                <User style={{ width: '14px', height: '14px', color: 'var(--text-primary)' }} />
+                <span itemProp="author">{post.author_name}</span>
               </div>
-            ))}
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+              <Clock style={{ width: '14px', height: '14px', color: 'var(--text-primary)' }} />
+              <span>5 {t('blogPage.readTime')}</span>
+            </div>
           </div>
         </div>
 
         {/* Summary */}
-        <p style={{
-          fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.7,
-          borderLeft: '2px solid var(--accent-primary)',
-          paddingLeft: '16px',
-          marginBottom: '32px',
-          fontStyle: 'italic',
-        }}>
+        <p
+          itemProp="description"
+          style={{
+            fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.7,
+            borderLeft: '2px solid var(--accent-primary)',
+            paddingLeft: '16px',
+            marginBottom: '32px',
+            fontStyle: 'italic',
+          }}
+        >
           {post.summary}
         </p>
 
         {/* Body Content */}
-        <div className="prose-custom">
+        <div itemProp="articleBody" className="prose-custom">
           {paragraphs.map((para, i) => {
             if (para.startsWith('### ')) {
               return <h3 key={i}>{para.replace('### ', '')}</h3>;

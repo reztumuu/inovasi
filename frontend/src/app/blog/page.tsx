@@ -69,5 +69,63 @@ export const metadata: Metadata = {
 export default async function BlogPage() {
   const posts = await getPosts();
 
-  return <BlogPageClient posts={posts} />;
+  const blogListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Blog & Wawasan Teknologi | Codevora',
+    description: 'Kumpulan artikel, berita teknologi terkini, tips web development, dan panduan rekayasa software dari Codevora.',
+    url: 'https://codevora.id/blog',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'BlogPosting',
+          headline: post.title,
+          url: `https://codevora.id/blog/${post.slug}`,
+          description: post.summary,
+          image: post.image_url,
+          datePublished: post.created_at,
+          author: {
+            '@type': 'Person',
+            name: post.author_name || 'Codevora',
+          },
+        },
+      })),
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://codevora.id',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: 'https://codevora.id/blog',
+      },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <BlogPageClient posts={posts} />
+    </>
+  );
 }

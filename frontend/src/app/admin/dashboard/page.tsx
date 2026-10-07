@@ -7,7 +7,8 @@ import {
   Trash2, CheckCircle2, Loader2, User, LayoutDashboard, AlertCircle,
   Archive, RotateCcw, Plus, Edit2, X, Save, ExternalLink,
   Image as ImageIcon, BookOpen, FolderOpen, Inbox, Settings, Layers, Upload,
-  Globe, Smartphone, Palette, Cloud, Cpu, Code2, Shield, Database, Terminal
+  Globe, Smartphone, Palette, Cloud, Cpu, Code2, Shield, Database, Terminal,
+  Bot, DownloadCloud, Search
 } from 'lucide-react';
 
 /* =====================================================
@@ -483,6 +484,11 @@ export default function AdminDashboard() {
   const [postsLoading, setPostsLoading] = useState(false);
   const [postsError, setPostsError] = useState('');
   const [postModal, setPostModal] = useState<{ open: boolean; item: Post | null }>({ open: false, item: null });
+  const [scrapeSource, setScrapeSource] = useState('all');
+  const [scrapeLimit, setScrapeLimit] = useState(5);
+  const [scraping, setScraping] = useState(false);
+  const [scrapeResult, setScrapeResult] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+  const [blogSearch, setBlogSearch] = useState('');
 
   /* --- Services state --- */
   const [services, setServices] = useState<Service[]>([]);
@@ -722,6 +728,34 @@ export default function AdminDashboard() {
         setDeleteConfirm(null);
       }
     });
+  };
+
+  const handleScrapePosts = async () => {
+    setScraping(true);
+    setScrapeResult(null);
+    const token = localStorage.getItem('admin_token');
+    try {
+      const res = await fetch('https://codevora.id/api/admin/posts/scrape', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({ source: scrapeSource, limit: scrapeLimit }),
+      });
+      const data = await res.json();
+      if (res.ok && data.status === 'success') {
+        setScrapeResult({ msg: data.message || 'Scraping berhasil!', type: 'success' });
+        await fetchPosts();
+      } else {
+        setScrapeResult({ msg: data.message || 'Gagal melakukan scraping.', type: 'error' });
+      }
+    } catch {
+      setScrapeResult({ msg: 'Gagal terhubung ke server API.', type: 'error' });
+    } finally {
+      setScraping(false);
+    }
   };
 
   /* -------------------- SERVICES -------------------- */
@@ -1090,25 +1124,173 @@ export default function AdminDashboard() {
         {activeTab === 'blog' && (
           <div>
             <SectionHeader
-              title="Blog Articles"
+              title="Blog Articles & News"
               count={posts.length}
               onAdd={() => setPostModal({ open: true, item: null })}
               onRefresh={fetchPosts}
               loading={postsLoading}
-              addLabel="New Article"
+              addLabel="Tulis Artikel Manual"
             />
+
+            {/* Auto Scraper Controls Box */}
+            <div
+              className="solid-card"
+              style={{
+                padding: '20px 24px',
+                marginBottom: '24px',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border-default)',
+              }}
+            >
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '16px' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Bot style={{ width: '18px', height: '18px', color: 'var(--accent-cyan)' }} />
+                    <h3 style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                      Auto Scraper Berita Teknologi
+                    </h3>
+                  </div>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: '4px 0 0' }}>
+                    Sistem otomatis scrap berita teknologi setiap hari pukul 05:00 WIB. Anda juga dapat scrap manual kapan saja.
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: '14px' }}>
+                <div style={{ flex: '1 1 240px' }}>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    Pilih Sumber Berita
+                  </label>
+                  <select
+                    value={scrapeSource}
+                    onChange={(e) => setScrapeSource(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      borderRadius: 'var(--radius-sm)',
+                      background: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-default)',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.85rem',
+                      outline: 'none',
+                    }}
+                  >
+                    <option value="all">Semua Sumber (Indonesia & Global)</option>
+                    <option value="antara">ANTARA News Tekno (Indonesia)</option>
+                    <option value="devto">Dev.to Tech & WebDev (Global)</option>
+                  </select>
+                </div>
+
+                <div style={{ width: '130px' }}>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    Jumlah Berita
+                  </label>
+                  <select
+                    value={scrapeLimit}
+                    onChange={(e) => setScrapeLimit(Number(e.target.value))}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      borderRadius: 'var(--radius-sm)',
+                      background: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-default)',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.85rem',
+                      outline: 'none',
+                    }}
+                  >
+                    <option value={3}>3 Artikel</option>
+                    <option value={5}>5 Artikel</option>
+                    <option value={10}>10 Artikel</option>
+                  </select>
+                </div>
+
+                <div>
+                  <button
+                    type="button"
+                    onClick={handleScrapePosts}
+                    disabled={scraping}
+                    className="btn btn-primary btn-sm"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '9px 18px',
+                      opacity: scraping ? 0.7 : 1,
+                      cursor: scraping ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {scraping ? (
+                      <>
+                        <Loader2 style={{ width: '14px', height: '14px', animation: 'spin 1s linear infinite' }} />
+                        <span>Menyinkronkan...</span>
+                      </>
+                    ) : (
+                      <>
+                        <DownloadCloud style={{ width: '14px', height: '14px' }} />
+                        <span>Scrap Berita Sekarang</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {scrapeResult && (
+                <div
+                  style={{
+                    marginTop: '16px',
+                    padding: '10px 14px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '0.82rem',
+                    background: scrapeResult.type === 'success' ? 'rgba(5, 150, 105, 0.1)' : 'rgba(225, 29, 72, 0.1)',
+                    border: `1px solid ${scrapeResult.type === 'success' ? 'rgba(5, 150, 105, 0.3)' : 'rgba(225, 29, 72, 0.3)'}`,
+                    color: scrapeResult.type === 'success' ? 'var(--accent-emerald)' : 'var(--accent-rose)',
+                  }}
+                >
+                  {scrapeResult.msg}
+                </div>
+              )}
+            </div>
+
+            {/* Search Filter */}
+            <div style={{ marginBottom: '16px', position: 'relative' }}>
+              <Search style={{ width: '14px', height: '14px', position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input
+                type="text"
+                placeholder="Cari artikel berdasarkan judul atau penulis..."
+                value={blogSearch}
+                onChange={(e) => setBlogSearch(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '9px 12px 9px 36px',
+                  borderRadius: 'var(--radius-sm)',
+                  background: 'var(--bg-surface)',
+                  border: '1px solid var(--border-default)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  outline: 'none',
+                }}
+              />
+            </div>
+
             {postsLoading && posts.length === 0 ? (
               <EmptyLoading />
             ) : postsError ? (
               <ErrorBox msg={postsError} />
             ) : posts.length === 0 ? (
-              <EmptyBox icon="✍️" title="No articles yet" desc="Write your first blog article to share insights." />
+              <EmptyBox icon="✍️" title="No articles yet" desc="Write your first blog article or click 'Scrap Berita Sekarang'." />
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {posts.map(post => (
+                {posts
+                  .filter(post =>
+                    !blogSearch ||
+                    post.title.toLowerCase().includes(blogSearch.toLowerCase()) ||
+                    (post.author_name && post.author_name.toLowerCase().includes(blogSearch.toLowerCase()))
+                  )
+                  .map(post => (
                   <div key={post.id} className="solid-card" style={{ padding: 0, overflow: 'hidden', display: 'flex' }}>
                     {/* Thumbnail */}
-                    <div style={{ width: '110px', minHeight: '90px', flexShrink: 0, overflow: 'hidden', background: 'var(--bg-elevated)' }}>
+                    <div style={{ width: '120px', minHeight: '90px', flexShrink: 0, overflow: 'hidden', background: 'var(--bg-elevated)' }}>
                       {post.image_url ? (
                         <img src={post.image_url} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
@@ -1122,9 +1304,30 @@ export default function AdminDashboard() {
                       <div>
                         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px' }}>
                           <div style={{ minWidth: 0 }}>
-                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '2px' }}>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '2px', flexWrap: 'wrap' }}>
                               <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>{formatDate(post.created_at)}</span>
-                              {post.author_name && <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>by {post.author_name}</span>}
+                              {post.author_name && (
+                                <span
+                                  className="badge"
+                                  style={{
+                                    fontSize: '0.62rem',
+                                    padding: '2px 6px',
+                                    background: post.author_name.includes('Antara')
+                                      ? 'rgba(217, 119, 6, 0.1)'
+                                      : post.author_name.includes('Dev.to')
+                                      ? 'rgba(109, 40, 217, 0.1)'
+                                      : 'var(--bg-elevated)',
+                                    color: post.author_name.includes('Antara')
+                                      ? 'var(--accent-amber)'
+                                      : post.author_name.includes('Dev.to')
+                                      ? 'var(--accent-violet)'
+                                      : 'var(--text-secondary)',
+                                    border: '1px solid var(--border-default)',
+                                  }}
+                                >
+                                  {post.author_name}
+                                </span>
+                              )}
                             </div>
                             <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {post.title}

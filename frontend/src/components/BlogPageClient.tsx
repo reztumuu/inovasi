@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { Calendar, User, ArrowRight, Clock } from 'lucide-react';
+import { Calendar, User, ArrowRight, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface BlogPost {
@@ -21,6 +21,24 @@ interface BlogPageClientProps {
 
 export default function BlogPageClient({ posts }: BlogPageClientProps) {
   const { t, language } = useLanguage();
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsSectionRef = useRef<HTMLElement>(null);
+
+  const pageSize = 10;
+  const totalPages = Math.ceil(posts.length / pageSize);
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const currentPosts = posts.slice(startIndex, startIndex + pageSize);
+
+  const featuredPost = currentPage === 1 ? currentPosts[0] : null;
+  const gridPosts = currentPage === 1 ? currentPosts.slice(1) : currentPosts;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    if (postsSectionRef.current) {
+      postsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString(language === 'id' ? 'id-ID' : 'en-US', {
@@ -64,7 +82,7 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
       </section>
 
       {/* Posts Grid */}
-      <section style={{ padding: '48px 0 100px' }}>
+      <section ref={postsSectionRef} style={{ padding: '48px 0 100px' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
           {posts.length === 0 ? (
             <div style={{
@@ -77,10 +95,10 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
             </div>
           ) : (
             <>
-              {/* Featured Post (first item in asymmetric style) */}
-              {posts[0] && (
+              {/* Featured Post (first item on Page 1) */}
+              {featuredPost && (
                 <Link
-                  href={`/blog/${posts[0].slug}`}
+                  href={`/blog/${featuredPost.slug}`}
                   style={{ textDecoration: 'none', display: 'block', marginBottom: '32px' }}
                 >
                   <article
@@ -93,7 +111,7 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
                     }}
                   >
                     <div className="img-cover-wrap" style={{ position: 'relative', minHeight: '280px', overflow: 'hidden', background: 'var(--bg-elevated)' }}>
-                      <img src={posts[0].image_url} alt={posts[0].title} className="img-cover" />
+                      <img src={featuredPost.image_url} alt={featuredPost.title} className="img-cover" />
                       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)' }} />
                       <div style={{ position: 'absolute', top: '16px', left: '16px' }}>
                         <span className="badge badge-primary">
@@ -104,8 +122,8 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
                     <div style={{ padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '16px' }}>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
                         {[
-                          { icon: Calendar, text: formatDate(posts[0].created_at) },
-                          { icon: User, text: posts[0].author_name },
+                          { icon: Calendar, text: formatDate(featuredPost.created_at) },
+                          { icon: User, text: featuredPost.author_name },
                           { icon: Clock, text: `5 ${t('blogPage.readTime')}` },
                         ].map((m, i) => (
                           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -115,10 +133,10 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
                         ))}
                       </div>
                       <h2 style={{ fontSize: 'clamp(1.2rem, 2vw, 1.6rem)', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', lineHeight: 1.25 }}>
-                        {posts[0].title}
+                        {featuredPost.title}
                       </h2>
                       <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                        {posts[0].summary}
+                        {featuredPost.summary}
                       </p>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-accent)', fontSize: '0.875rem', fontWeight: 600 }}>
                         {t('blogPage.readArticle')}
@@ -129,9 +147,9 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
                 </Link>
               )}
 
-              {/* Remaining Posts Grid */}
+              {/* Grid Posts */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
-                {posts.slice(1).map((post) => (
+                {gridPosts.map((post) => (
                   <Link key={post.id} href={`/blog/${post.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
                     <article
                       className="solid-card"
@@ -173,6 +191,94 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
                   </Link>
                 ))}
               </div>
+
+              {/* Centered Pagination */}
+              {totalPages > 1 && (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginTop: '56px',
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: 'var(--radius-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-default)',
+                      color: 'var(--text-primary)',
+                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                      opacity: currentPage === 1 ? 0.35 : 1,
+                      transition: 'all 0.2s ease',
+                    }}
+                    aria-label="Previous page"
+                  >
+                    <ChevronLeft style={{ width: '16px', height: '16px' }} />
+                  </button>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                    const isActive = pageNum === currentPage;
+                    return (
+                      <button
+                        key={pageNum}
+                        type="button"
+                        onClick={() => handlePageChange(pageNum)}
+                        style={{
+                          minWidth: '40px',
+                          height: '40px',
+                          padding: '0 12px',
+                          borderRadius: 'var(--radius-sm)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.88rem',
+                          fontWeight: isActive ? 700 : 500,
+                          background: isActive ? 'var(--text-primary)' : 'var(--bg-elevated)',
+                          color: isActive ? 'var(--bg-base)' : 'var(--text-secondary)',
+                          border: isActive ? '1px solid var(--text-primary)' : '1px solid var(--border-default)',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    type="button"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: 'var(--radius-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-default)',
+                      color: 'var(--text-primary)',
+                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                      opacity: currentPage === totalPages ? 0.35 : 1,
+                      transition: 'all 0.2s ease',
+                    }}
+                    aria-label="Next page"
+                  >
+                    <ChevronRight style={{ width: '16px', height: '16px' }} />
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>

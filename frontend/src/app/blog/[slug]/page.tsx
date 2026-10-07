@@ -66,9 +66,28 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = await getPost(slug);
   if (!post) return { title: 'Post Not Found' };
 
+  const keywords = [
+    post.title.toLowerCase(),
+    'berita teknologi',
+    'artikel teknologi',
+    'tips teknologi',
+    'web development',
+    'software engineering',
+    'codevora blog',
+    post.author_name ? post.author_name.toLowerCase() : 'admin'
+  ];
+
   return {
     title: post.title,
-    description: post.summary || 'Artikel teknis dan wawasan web development dari Codevora.',
+    description: post.summary || 'Artikel teknis dan wawasan teknologi terkini dari Codevora.',
+    keywords,
+    robots: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
     alternates: {
       canonical: `https://codevora.id/blog/${post.slug}`,
     },
@@ -76,6 +95,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: `${post.title} | Codevora`,
       description: post.summary,
       url: `https://codevora.id/blog/${post.slug}`,
+      siteName: 'Codevora',
+      locale: 'id_ID',
       images: [
         {
           url: post.image_url || 'https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png',
@@ -102,5 +123,69 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const post = await getPost(slug);
   if (!post) notFound();
 
-  return <BlogPostPageClient post={post} />;
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://codevora.id/blog/${post.slug}`,
+    },
+    headline: post.title,
+    description: post.summary,
+    image: [post.image_url || 'https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png'],
+    datePublished: post.created_at,
+    dateModified: post.created_at,
+    author: {
+      '@type': 'Person',
+      name: post.author_name || 'Codevora Team',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Codevora',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png',
+      },
+    },
+    articleBody: post.content ? post.content.replace(/###|\*\*|```/g, '').trim() : post.summary,
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://codevora.id',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: 'https://codevora.id/blog',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `https://codevora.id/blog/${post.slug}`,
+      },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <BlogPostPageClient post={post} />
+    </>
+  );
 }

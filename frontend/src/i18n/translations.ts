@@ -89,7 +89,7 @@ export const translations = {
       subtitle: 'Have a product idea, legacy migration, or scaling challenge? Fill out the form and one of our principal engineers will reach out within 24 hours.',
       whyUs: [
         { title: 'Needs-First Approach', desc: 'No templates. We study your architecture and requirements before writing a single line.' },
-        { title: 'Direct Engineer Access', desc: 'Interface directly with our engineering team — never just sales reps.' },
+        { title: 'Direct Engineer Access', desc: 'Interface directly with our engineering team - never just sales reps.' },
         { title: 'Agile Delivery', desc: 'Transparent pipelines with daily commits, weekly standups, and on-time delivery.' },
       ]
     },
@@ -232,7 +232,7 @@ export const translations = {
       subtitle: 'Memiliki ide produk, migrasi sistem warisan, atau tantangan skalabilitas? Isi formulir dan salah satu insinyur utama kami akan menghubungi dalam waktu 24 jam.',
       whyUs: [
         { title: 'Pendekatan Kebutuhan Utama', desc: 'Tanpa templat. Kami mempelajari arsitektur dan persyaratan Anda sebelum menulis satu baris kode.' },
-        { title: 'Akses Insinyur Langsung', desc: 'Berinteraksi langsung dengan tim insinyur kami — tidak pernah hanya dengan staf penjualan.' },
+        { title: 'Akses Insinyur Langsung', desc: 'Berinteraksi langsung dengan tim insinyur kami - tidak pernah hanya dengan staf penjualan.' },
         { title: 'Pengiriman Cepat (Agile)', desc: 'Pipa transparan dengan commit harian, standup mingguan, dan pengiriman tepat waktu.' },
       ]
     },

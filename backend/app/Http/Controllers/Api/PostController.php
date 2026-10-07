@@ -108,4 +108,46 @@ class PostController extends Controller
             'message' => 'Blog post deleted successfully'
         ]);
     }
+
+    /**
+     * Trigger auto-scraping of technology articles (Admin API).
+     */
+    public function scrape(Request $request, \App\Services\TechNewsScraperService $scraper)
+    {
+        $source = $request->input('source', 'all');
+        $limit = (int) $request->input('limit', 5);
+        if ($limit < 1 || $limit > 20) {
+            $limit = 5;
+        }
+
+        $result = $scraper->scrape($source, $limit);
+
+        return response()->json($result);
+    }
+
+    /**
+     * Get scraper status & settings (Admin API).
+     */
+    public function scraperStatus()
+    {
+        $totalPosts = Post::count();
+        $latestScraped = Post::where('author_name', 'like', '%Antara%')
+            ->orWhere('author_name', 'like', '%Dev.to%')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_posts' => $totalPosts,
+                'last_scraped_at' => $latestScraped ? $latestScraped->created_at->toIso8601String() : null,
+                'last_scraped_title' => $latestScraped ? $latestScraped->title : null,
+                'available_sources' => [
+                    ['id' => 'all', 'name' => 'Semua Sumber (Indonesia & Global)'],
+                    ['id' => 'antara', 'name' => 'ANTARA News Tekno (Indonesia)'],
+                    ['id' => 'devto', 'name' => 'Dev.to Tech & WebDev (Global)'],
+                ]
+            ]
+        ]);
+    }
 }
