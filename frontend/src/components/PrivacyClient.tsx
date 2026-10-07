@@ -148,9 +148,12 @@ export default function PrivacyClient() {
                 </div>
 
                 <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px' }}>7. Cookies and Tracking Technologies</h2>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px' }}>7. Cookies and Google AdSense / Third-Party Advertising</h2>
+                  <p style={{ marginBottom: '12px' }}>
+                    Our website uses cookies to enhance functionality, analyze traffic patterns, and deliver relevant advertisements. Third-party vendors, including Google, use cookies (such as DoubleClick DART cookies) to serve ads based on your prior visits to this website or other websites across the internet.
+                  </p>
                   <p>
-                    Our website uses cookies to enhance functionality and analyze traffic patterns. Cookies are small files transferred to your computer storage through your web browser. You can choose to disable cookies in your browser settings, though doing so may impact certain interactive features on our site.
+                    Google&apos;s use of advertising cookies enables it and its partners to serve ads based on your visit to our site and/or other sites on the Internet. You may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-accent)' }}>Google Ads Settings</a> or through <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-accent)' }}>www.aboutads.info</a>.
                   </p>
                 </div>
 
@@ -289,9 +292,12 @@ export default function PrivacyClient() {
                 </div>
 
                 <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px' }}>7. Cookies dan Teknologi Pelacakan</h2>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px' }}>7. Cookie dan Iklan Pihak Ketiga (Google AdSense)</h2>
+                  <p style={{ marginBottom: '12px' }}>
+                    Situs web ini menggunakan cookies untuk meningkatkan fungsionalitas, menganalisis lalu lintas pengunjung, serta menayangkan iklan yang relevan. Vendor pihak ketiga, termasuk Google, menggunakan cookie (seperti cookie DoubleClick DART) untuk menayangkan iklan kepada pengguna berdasarkan kunjungan mereka ke situs ini atau situs web lain di internet.
+                  </p>
                   <p>
-                    Situs web ini menggunakan cookies untuk meningkatkan fungsionalitas dan menganalisis perilaku pengunjung. Cookies adalah berkas kecil yang dikirim ke penyimpanan komputer Anda oleh browser. Anda dapat memilih untuk menonaktifkan cookies melalui pengaturan browser Anda, namun hal tersebut mungkin dapat memengaruhi beberapa fungsionalitas interaktif pada situs web kami.
+                    Penggunaan cookie iklan oleh Google memungkinkan Google dan mitranya menayangkan iklan berdasarkan riwayat kunjungan pengguna ke situs kami dan/atau situs lainnya di internet. Anda dapat memilih keluar dari iklan yang dipersonalisasi dengan mengunjungi <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-accent)' }}>Setelan Iklan Google</a> atau melalui <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-accent)' }}>www.aboutads.info</a>.
                   </p>
                 </div>
 

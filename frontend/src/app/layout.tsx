@@ -300,9 +300,23 @@ export default async function RootLayout({
     }
   ];
 
+  const adsenseClientId = settings?.google_adsense_id
+    ? (settings.google_adsense_id.startsWith('ca-') ? settings.google_adsense_id : `ca-${settings.google_adsense_id}`)
+    : null;
+
   return (
     <html lang="en">
       <head>
+        {adsenseClientId && (
+          <>
+            <meta name="google-adsense-account" content={adsenseClientId} />
+            <script
+              async
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+              crossOrigin="anonymous"
+            />
+          </>
+        )}
         {settings?.link_rel && parseLinkRel(settings.link_rel)}
         <script
           type="application/ld+json"

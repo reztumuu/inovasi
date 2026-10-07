@@ -504,6 +504,8 @@ export default function AdminDashboard() {
     link_rel: '',
     google_analytics_id: '',
     google_tag_manager_id: '',
+    google_adsense_id: '',
+    ads_txt: '',
     meta_description: '',
     meta_keywords: '',
     robots: 'index, follow',
@@ -595,6 +597,8 @@ export default function AdminDashboard() {
           link_rel: data.data.link_rel || '',
           google_analytics_id: data.data.google_analytics_id || '',
           google_tag_manager_id: data.data.google_tag_manager_id || '',
+          google_adsense_id: data.data.google_adsense_id || '',
+          ads_txt: data.data.ads_txt || '',
           meta_description: data.data.meta_description || '',
           meta_keywords: data.data.meta_keywords || '',
           robots: data.data.robots || 'index, follow',
@@ -1522,6 +1526,24 @@ export default function AdminDashboard() {
                     value={settingsForm.google_tag_manager_id}
                     onChange={e => setSettingsForm(prev => ({ ...prev, google_tag_manager_id: e.target.value }))}
                     placeholder="GTM-XXXXXXX"
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginTop: '12px' }}>
+                  <InputField
+                    label="Google AdSense Publisher ID"
+                    name="google_adsense_id"
+                    value={settingsForm.google_adsense_id}
+                    onChange={e => setSettingsForm(prev => ({ ...prev, google_adsense_id: e.target.value }))}
+                    placeholder="ca-pub-XXXXXXXXXXXXXXXX"
+                  />
+                  <InputField
+                    label="Custom ads.txt (Opsional)"
+                    name="ads_txt"
+                    value={settingsForm.ads_txt}
+                    onChange={e => setSettingsForm(prev => ({ ...prev, ads_txt: e.target.value }))}
+                    rows={2}
+                    placeholder="google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0"
                   />
                 </div>
 

@@ -24,6 +24,8 @@ class SettingController extends Controller
             'link_rel' => '',
             'google_analytics_id' => '',
             'google_tag_manager_id' => '',
+            'google_adsense_id' => '',
+            'ads_txt' => '',
             'meta_description' => '',
             'meta_keywords' => '',
             'robots' => 'index, follow'
@@ -57,6 +59,8 @@ class SettingController extends Controller
             'link_rel' => 'nullable|string',
             'google_analytics_id' => 'nullable|string|max:50',
             'google_tag_manager_id' => 'nullable|string|max:50',
+            'google_adsense_id' => 'nullable|string|max:100',
+            'ads_txt' => 'nullable|string',
             'meta_description' => 'nullable|string|max:320',
             'meta_keywords' => 'nullable|string|max:500',
             'robots' => 'nullable|string|max:100'
