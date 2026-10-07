@@ -4,8 +4,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Globe, Smartphone, Palette, Cloud, Cpu,
-  ArrowRight, Star, Code2, Layers, GitMerge,
-  Shield, Database, Terminal, Rocket, Gem, Zap
+  ArrowRight, Star, Code2, Layers,
+  Shield, Database, Terminal, Rocket, Gem, Zap,
+  ExternalLink, Building2
 } from 'lucide-react';
 import ContactForm from '@/components/ContactForm';
 import { useLanguage } from '@/context/LanguageContext';
@@ -26,6 +27,7 @@ interface PortfolioItem {
   description: string;
   image_url: string;
   tech_stack: string[];
+  live_url?: string;
 }
 
 interface HomePageClientProps {
@@ -44,16 +46,22 @@ function AnimatedCounter({ value, startTrigger }: { value: string; startTrigger:
   const target = numericMatch ? parseFloat(numericMatch[1]) : 0;
   
   const [count, setCount] = useState(0);
+  const hasAnimatedRef = useRef(false);
   
   useEffect(() => {
     if (!startTrigger) {
+      hasAnimatedRef.current = false;
       setCount(0);
       return;
     }
-    
-    const duration = 1500; // 1.5 seconds animation
+
+    if (hasAnimatedRef.current) return;
+    hasAnimatedRef.current = true;
+
+    const duration = 1500;
     const startTime = performance.now();
-    let animationFrameId: number;
+    let animationFrameId = 0;
+    setCount(0);
     
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
@@ -63,9 +71,7 @@ function AnimatedCounter({ value, startTrigger }: { value: string; startTrigger:
       const currentVal = easeProgress * target;
       
       const isFloat = target % 1 !== 0;
-      const formattedVal = isFloat ? currentVal.toFixed(1) : Math.floor(currentVal).toString();
-      
-      setCount(parseFloat(formattedVal));
+      setCount(isFloat ? Number(currentVal.toFixed(1)) : Math.floor(currentVal));
       
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(animate);
@@ -90,25 +96,49 @@ function AnimatedCounter({ value, startTrigger }: { value: string; startTrigger:
 }
 
 export default function HomePageClient({ services, portfolios }: HomePageClientProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { settings } = useSettings();
 
+  const [heroStatsVisible, setHeroStatsVisible] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
+  const heroStatsRef = useRef<HTMLDivElement>(null);
   const statsSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const heroStartTimer = window.setTimeout(() => {
+      setHeroStatsVisible(true);
+    }, 150);
+
+    const heroObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeroStatsVisible(true);
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    const statsObserver = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setStatsVisible(true);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: '0px 0px -10% 0px' }
     );
-    if (statsSectionRef.current) {
-      observer.observe(statsSectionRef.current);
+
+    if (heroStatsRef.current) {
+      heroObserver.observe(heroStatsRef.current);
     }
-    return () => observer.disconnect();
+    if (statsSectionRef.current) {
+      statsObserver.observe(statsSectionRef.current);
+    }
+
+    return () => {
+      window.clearTimeout(heroStartTimer);
+      heroObserver.disconnect();
+      statsObserver.disconnect();
+    };
   }, []);
 
   const getLocalizedService = (service: ServiceItem) => {
@@ -209,6 +239,7 @@ export default function HomePageClient({ services, portfolios }: HomePageClientP
 
             {/* Right: Clean editorial grid display of stats (Asymmetric) */}
             <div
+              ref={heroStatsRef}
               className="animate-fade-up-delay-4"
               style={{
                 display: 'grid',
@@ -234,7 +265,7 @@ export default function HomePageClient({ services, portfolios }: HomePageClientP
                   }}
                 >
                   <div className="stat-number" style={{ marginBottom: '6px' }}>
-                    <AnimatedCounter value={s.value} startTrigger={true} />
+                    <AnimatedCounter value={s.value} startTrigger={heroStatsVisible} />
                   </div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.label}</div>
                 </div>
@@ -273,7 +304,7 @@ export default function HomePageClient({ services, portfolios }: HomePageClientP
               gap: '16px',
             }}
           >
-            {services.map((service, idx) => {
+            {services.map((service) => {
               const IconComponent = iconMap[service.icon_name] || Globe;
               const localized = getLocalizedService(service);
               return (
@@ -311,61 +342,244 @@ export default function HomePageClient({ services, portfolios }: HomePageClientP
 
       {/* ============ FEATURED WORKS SECTION ============ */}
       <section
+        id="portfolio"
+        aria-labelledby="featured-projects-heading"
         style={{
-          padding: '100px 0',
+          padding: '110px 0',
           borderBottom: '1px solid var(--border-default)',
+          background: 'linear-gradient(180deg, var(--bg-base) 0%, var(--bg-surface) 100%)',
+          position: 'relative',
         }}
       >
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
-          {/* Header row */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '24px', marginBottom: '48px' }}>
-            <div>
-              <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, color: 'var(--text-primary)' }}>
+          {/* Header row with title and direct link */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '28px', marginBottom: '56px' }}>
+            <div style={{ maxWidth: '720px' }}>
+              <h2
+                id="featured-projects-heading"
+                style={{
+                  fontSize: 'clamp(2rem, 3.8vw, 2.75rem)',
+                  fontWeight: 800,
+                  color: 'var(--text-primary)',
+                  letterSpacing: '-0.03em',
+                  lineHeight: 1.15,
+                  marginBottom: '14px',
+                }}
+              >
                 {t('featured.title')}
               </h2>
+              <p
+                style={{
+                  fontSize: '1rem',
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.65,
+                  margin: 0,
+                }}
+              >
+                {language === 'id'
+                  ? 'Portofolio terpilih dan solusi digital berskala produksi yang kami rancang dengan arsitektur modern, performa tinggi, dan hasil bisnis terukur.'
+                  : 'Selected production-grade digital solutions and case studies engineered with modern architecture, uncompromising speed, and measurable impact.'}
+              </p>
             </div>
             <Link
               href="/portfolio"
-              className="btn btn-ghost btn-sm"
-              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+              className="btn btn-ghost"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 20px',
+                border: '1px solid var(--border-default)',
+              }}
             >
-              {t('featured.viewAll')}
+              <span>{t('featured.viewAll')}</span>
               <ArrowRight style={{ width: '14px', height: '14px' }} />
             </Link>
           </div>
 
-          {/* Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '24px' }}>
-            {portfolios.slice(0, 2).map(item => (
-              <div
+          {/* Project Cards Grid */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+              gap: '28px',
+            }}
+          >
+            {portfolios.slice(0, 3).map((item) => (
+              <article
                 key={item.id}
-                className="solid-card"
-                style={{ overflow: 'hidden', padding: 0, display: 'flex', flexDirection: 'column' }}
+                className="featured-project-card"
+                itemScope
+                itemType="https://schema.org/CreativeWork"
               >
-                {/* Image */}
-                <div className="img-cover-wrap" style={{ position: 'relative', height: '240px', overflow: 'hidden', background: 'var(--bg-elevated)' }}>
-                  <img src={item.image_url} alt={item.title} className="img-cover" />
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 60%)' }} />
-                  <div style={{ position: 'absolute', top: '16px', left: '16px' }}>
-                    <span className="badge badge-primary">{getLocalizedCategory(item.category)}</span>
+                {/* Media banner */}
+                <div className="img-wrap">
+                  <img
+                    src={item.image_url}
+                    alt={`${item.title} - ${item.client_name || 'Codevora Project'}`}
+                    className="img-thumb"
+                    loading="lazy"
+                    decoding="async"
+                    itemProp="image"
+                  />
+                  <div className="img-overlay" />
+                  
+                  {/* Category Pill (Top Left) */}
+                  <div style={{ position: 'absolute', top: '14px', left: '14px', zIndex: 2 }}>
+                    <span
+                      className="badge"
+                      style={{
+                        background: 'rgba(15, 23, 42, 0.75)',
+                        backdropFilter: 'blur(8px)',
+                        border: '1px solid rgba(255, 255, 255, 0.15)',
+                        color: '#f8fafc',
+                      }}
+                    >
+                      {getLocalizedCategory(item.category)}
+                    </span>
                   </div>
                 </div>
 
-                {/* Content */}
-                <div style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      {item.client_name || t('featured.client')}
-                    </span>
-                    <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '4px', marginBottom: '8px' }}>
-                      {item.title}
-                    </h3>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                      {item.description}
-                    </p>
+                {/* Content body */}
+                <div
+                  style={{
+                    padding: '24px',
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px',
+                  }}
+                >
+                  {/* Client Identifier */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      color: 'var(--text-muted)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                    }}
+                  >
+                    <Building2 style={{ width: '13px', height: '13px', color: 'var(--accent-violet)', flexShrink: 0 }} />
+                    <span itemProp="author">{item.client_name || t('featured.client')}</span>
+                  </div>
+
+                  {/* Title */}
+                  <h3
+                    itemProp="name"
+                    style={{
+                      fontSize: '1.25rem',
+                      fontWeight: 700,
+                      color: 'var(--text-primary)',
+                      lineHeight: 1.35,
+                      margin: 0,
+                    }}
+                  >
+                    {item.title}
+                  </h3>
+
+                  {/* Description with clean clamping */}
+                  <p
+                    itemProp="description"
+                    className="desc-clamp"
+                    style={{
+                      fontSize: '0.86rem',
+                      color: 'var(--text-secondary)',
+                      lineHeight: 1.6,
+                      margin: 0,
+                    }}
+                  >
+                    {item.description}
+                  </p>
+
+                  {/* Tech Stack Pills */}
+                  {item.tech_stack && item.tech_stack.length > 0 && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '6px',
+                        marginTop: '4px',
+                      }}
+                    >
+                      {item.tech_stack.slice(0, 5).map((tech, idx) => (
+                        <span key={idx} className="tech-pill">
+                          {tech}
+                        </span>
+                      ))}
+                      {item.tech_stack.length > 5 && (
+                        <span className="tech-pill" style={{ color: 'var(--text-muted)' }}>
+                          +{item.tech_stack.length - 5}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Actions / CTA footer */}
+                  <div
+                    style={{
+                      marginTop: 'auto',
+                      paddingTop: '16px',
+                      borderTop: '1px solid var(--border-subtle)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '12px',
+                    }}
+                  >
+                    {item.live_url ? (
+                      <a
+                        href={item.live_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-primary btn-sm"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <span>{t('featured.visitSite')}</span>
+                        <ExternalLink style={{ width: '13px', height: '13px' }} />
+                      </a>
+                    ) : (
+                      <Link
+                        href="/portfolio"
+                        className="btn btn-ghost btn-sm"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          border: '1px solid var(--border-default)',
+                        }}
+                      >
+                        <span>Detail</span>
+                        <ArrowRight style={{ width: '13px', height: '13px' }} />
+                      </Link>
+                    )}
+
+                    <Link
+                      href="/portfolio"
+                      style={{
+                        fontSize: '0.78rem',
+                        color: 'var(--text-muted)',
+                        textDecoration: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                      className="hover-text-primary"
+                    >
+                      <span>Case Study</span>
+                      <ArrowRight style={{ width: '12px', height: '12px' }} />
+                    </Link>
                   </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>
@@ -557,7 +771,7 @@ export default function HomePageClient({ services, portfolios }: HomePageClientP
 
       {/* WhatsApp Floating Widget */}
       <a
-        href={`https://wa.me/6281222054811?text=${encodeURIComponent(t('whatsapp.message').replace('{name}', settings.site_name || 'InovasiTech'))}`}
+        href={`https://wa.me/6285161841094?text=${encodeURIComponent(t('whatsapp.message').replace('{name}', settings.site_name || 'Codevora'))}`}
         target="_blank"
         rel="noopener noreferrer"
         title={t('whatsapp.tooltip')}

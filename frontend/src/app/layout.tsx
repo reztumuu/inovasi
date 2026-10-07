@@ -125,7 +125,7 @@ export default async function RootLayout({
       "logo": settings?.site_logo || "https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png",
       "image": settings?.site_logo || "https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png",
       "description": settings?.meta_description || "Expert web development, mobile app, cloud & AI solutions for modern businesses. Your trusted digital partner for scalable and innovative technology.",
-      "telephone": "+62 81222054811",
+      "telephone": "+6285161841094",
       "email": "hello@codevora.id",
       "address": {
         "@type": "PostalAddress",
@@ -158,11 +158,72 @@ export default async function RootLayout({
         "https://t.me/gamingku"
       ],
       "priceRange": "$$",
+      "knowsAbout": [
+        "Jasa Pembuatan Website",
+        "Web Development",
+        "Pembuatan Website Profesional",
+        "Next.js",
+        "Laravel",
+        "React",
+        "Mobile App Development",
+        "UI/UX Design",
+        "E-Commerce Website",
+        "SEO Optimization"
+      ],
+      "areaServed": [
+        { "@type": "Country", "name": "Indonesia" },
+        { "@type": "Country", "name": "Worldwide" }
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Layanan Jasa Pembuatan Website & Software",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Jasa Pembuatan Website Perusahaan & UMKM",
+              "description": "Layanan pembuatan website company profile, landing page, dan portal korporat modern dengan Next.js & Laravel."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Jasa Pembuatan Toko Online & E-Commerce",
+              "description": "Pengembangan platform e-commerce dan marketplace custom dengan sistem pembayaran terintegrasi."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Jasa Pembuatan Web Application & SaaS",
+              "description": "Pengembangan aplikasi web berbasis SaaS berskala tinggi dengan arsitektur cloud dan API teroptimasi."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Jasa Pembuatan Aplikasi Mobile iOS & Android",
+              "description": "Pengembangan aplikasi mobile native & cross-platform dengan React Native & Flutter."
+            }
+          }
+        ]
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "52",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
       "founder": {
         "@type": "Person",
         "name": "Restu Ariadi",
         "jobTitle": "Owner & CEO",
-        "telephone": "+62 81222054811",
+        "telephone": "+6285161841094",
         "url": "https://www.linkedin.com/in/reztumu/",
         "sameAs": [
           "https://www.linkedin.com/in/reztumu/",
@@ -181,10 +242,60 @@ export default async function RootLayout({
         "sameAs": "https://codevora.id"
       },
       "url": "https://www.linkedin.com/in/reztumu/",
-      "telephone": "+62 81222054811",
+      "telephone": "+6285161841094",
       "sameAs": [
         "https://www.linkedin.com/in/reztumu/",
         "https://github.com/reztumuu"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": settings?.site_name || "Codevora",
+      "url": "https://codevora.id",
+      "description": settings?.meta_description || "Software Engineering Studio",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://codevora.id/blog?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Berapa biaya jasa pembuatan website di Codevora?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Biaya jasa pembuatan website disesuaikan dengan kebutuhan dan spesifikasi fitur Anda, mulai dari landing page UMKM, website company profile profesional, toko online e-commerce, hingga custom web application skala enterprise."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Berapa lama estimasi waktu pembuatan website?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Waktu pengerjaan umumnya memakan waktu 1 hingga 4 minggu kerja tergantung pada ruang lingkup, kompleksitas desain, dan integrasi fitur yang dibutuhkan."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Apakah website yang dibuat sudah SEO-friendly dan mobile-friendly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ya, seluruh website yang kami bangun dioptimasi secara menyeluruh untuk kecepatan tinggi (Core Web Vitals), struktur SEO ramah mesin pencari Google, dan tampilan responsif sempurna di perangkat mobile maupun desktop."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Teknologi apa yang digunakan untuk pembuatan website di Codevora?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kami menggunakan teknologi modern industri terkini seperti Next.js, React, Tailwind CSS, Laravel, Go, PostgreSQL, MySQL, Docker, serta infrastruktur cloud AWS dan GCP."
+          }
+        }
       ]
     }
   ];

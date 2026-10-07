@@ -624,3 +624,62 @@ select.input-field option {
   background: rgba(225, 29, 72, 0.15) !important;
 }
 
+/* Hide legacy footer owner row if an older client bundle is still cached */
+footer li:has(a[href*="linkedin.com/in/reztumu/"]) {
+  display: none !important;
+}
+
+/* ============================================================
+   FEATURED PROJECT CARDS
+   ============================================================ */
+.featured-project-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+  position: relative;
+}
+
+.featured-project-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--text-muted);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.25);
+}
+
+.featured-project-card .img-wrap {
+  position: relative;
+  height: 230px;
+  overflow: hidden;
+  background: var(--bg-elevated);
+}
+
+.featured-project-card .img-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.featured-project-card:hover .img-thumb {
+  transform: scale(1.04);
+}
+
+.featured-project-card .img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.7) 0%, rgba(10, 10, 10, 0.1) 60%, transparent 100%);
+  pointer-events: none;
+}
+
+.featured-project-card .desc-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

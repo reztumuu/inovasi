@@ -199,7 +199,7 @@ export default function TermsClient() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Phone style={{ width: '14px', height: '14px', color: 'var(--text-accent)' }} />
-                      <a href="tel:+6281222054811" style={{ color: 'var(--text-accent)', textDecoration: 'none' }}>+62 81222054811</a>
+                      <a href="tel:+6285161841094" style={{ color: 'var(--text-accent)', textDecoration: 'none' }}>+6285161841094</a>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Mail style={{ width: '14px', height: '14px', color: 'var(--text-accent)' }} />
@@ -338,7 +338,7 @@ export default function TermsClient() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Phone style={{ width: '14px', height: '14px', color: 'var(--text-accent)' }} />
-                      <a href="tel:+6281222054811" style={{ color: 'var(--text-accent)', textDecoration: 'none' }}>+62 81222054811</a>
+                      <a href="tel:+6285161841094" style={{ color: 'var(--text-accent)', textDecoration: 'none' }}>+6285161841094</a>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Mail style={{ width: '14px', height: '14px', color: 'var(--text-accent)' }} />

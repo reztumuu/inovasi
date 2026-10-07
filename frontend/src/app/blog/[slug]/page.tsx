@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import BlogPostPageClient from '@/components/BlogPostPageClient';
 
@@ -58,6 +59,42 @@ async function getPost(slug: string): Promise<BlogPost | null> {
   } catch {
     return fallbackPosts[slug] || null;
   }
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPost(slug);
+  if (!post) return { title: 'Post Not Found' };
+
+  return {
+    title: post.title,
+    description: post.summary || 'Artikel teknis dan wawasan web development dari Codevora.',
+    alternates: {
+      canonical: `https://codevora.id/blog/${post.slug}`,
+    },
+    openGraph: {
+      title: `${post.title} | Codevora`,
+      description: post.summary,
+      url: `https://codevora.id/blog/${post.slug}`,
+      images: [
+        {
+          url: post.image_url || 'https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png',
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+      type: 'article',
+      publishedTime: post.created_at,
+      authors: [post.author_name || 'Codevora'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${post.title} | Codevora`,
+      description: post.summary,
+      images: [post.image_url || 'https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png'],
+    },
+  };
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import BlogPageClient from '@/components/BlogPageClient';
 
 interface BlogPost {
@@ -49,9 +50,20 @@ async function getPosts(): Promise<BlogPost[]> {
   }
 }
 
-export const metadata = {
-  title: 'Tech Insights & Blog',
-  description: 'Stay updated with the latest software engineering trends, architectural patterns, and tech advice.',
+export const metadata: Metadata = {
+  title: 'Blog & Panduan Web Development',
+  description: 'Artikel, tips, dan panduan terkini seputar jasa pembuatan website, arsitektur web modern, Next.js, Laravel, performa SEO, dan rekayasa perangkat lunak.',
+  keywords: [
+    'blog pembuatan website',
+    'tutorial web development',
+    'tips seo website',
+    'nextjs tutorial',
+    'laravel tips',
+    'codevora blog'
+  ],
+  alternates: {
+    canonical: 'https://codevora.id/blog',
+  },
 };
 
 export default async function BlogPage() {

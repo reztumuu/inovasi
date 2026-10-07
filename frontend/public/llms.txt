@@ -23,7 +23,7 @@ Codevora is a premium software engineering studio based in Indonesia, specializi
 - **Legal Entity**: PT INOVASI DIGITAL ASIA
 - **Founder & CEO**: Restu Ariadi
 - **Email**: hello@codevora.id
-- **Phone**: +62 81222054811
+- **Phone**: +6285161841094
 - **Address**: Cibiru Cipacing, JL Raya Jatinangor, Sumedang, Jawa Barat, Indonesia
 - **Socials**:
   - GitHub: https://github.com/reztumuu

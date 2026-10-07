@@ -1,5 +1,64 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import HomePageClient from '@/components/HomePageClient';
+
+export const metadata: Metadata = {
+  title: "Codevora | Jasa Pembuatan Website & Software Engineering Studio",
+  description: "Jasa pembuatan website profesional, toko online, company profile perusahaan, dan custom web app di Indonesia. Cepat, responsif, aman, dan mudah dicari di Google dengan Next.js & Laravel.",
+  keywords: [
+    "jasa pembuatan website",
+    "jasa buat website",
+    "jasa bikin website",
+    "pembuatan website",
+    "pembuatan website profesional",
+    "jasa pembuatan website murah",
+    "jasa pembuatan website company profile",
+    "jasa website toko online",
+    "jasa web development",
+    "web development indonesia",
+    "software house indonesia",
+    "software house bandung",
+    "web developer indonesia",
+    "custom web application",
+    "next.js developer indonesia",
+    "laravel developer indonesia",
+    "jasa seo website",
+    "website creation",
+    "custom website development",
+    "web development services",
+    "codevora"
+  ],
+  alternates: {
+    canonical: "https://codevora.id",
+    languages: {
+      "id-ID": "https://codevora.id",
+      "en-US": "https://codevora.id",
+    },
+  },
+  openGraph: {
+    title: "Codevora | Jasa Pembuatan Website & Software Engineering Studio",
+    description: "Layanan jasa pembuatan website profesional, aplikasi web modern, dan sistem enterprise berkecepatan tinggi dengan Next.js & Laravel.",
+    url: "https://codevora.id",
+    siteName: "Codevora",
+    locale: "id_ID",
+    alternateLocale: ["en_US"],
+    type: "website",
+    images: [
+      {
+        url: "https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png",
+        width: 1200,
+        height: 630,
+        alt: "Codevora - Jasa Pembuatan Website & Software Studio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Codevora | Jasa Pembuatan Website & Software Engineering Studio",
+    description: "Jasa pembuatan website profesional dan software engineering terpercaya di Indonesia.",
+    images: ["https://codevora.id/uploads/dPjXP5TGe2dbYLEnTZ70.png"],
+  },
+};
 
 interface ServiceItem {
   id: number;
@@ -16,6 +75,7 @@ interface PortfolioItem {
   description: string;
   image_url: string;
   tech_stack: string[];
+  live_url?: string;
 }
 
 async function getServices(): Promise<ServiceItem[]> {
@@ -70,5 +130,41 @@ export default async function Home() {
   const services = await getServices();
   const portfolios = await getPortfolios();
 
-  return <HomePageClient services={services} portfolios={portfolios} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Featured Engineering Works & Projects | Codevora",
+    "description": "Selected client projects and case studies developed by Codevora Software Engineering Studio.",
+    "url": "https://codevora.id",
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": portfolios.map((item, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "CreativeWork",
+          "name": item.title,
+          "headline": item.title,
+          "description": item.description,
+          "image": item.image_url,
+          "creator": {
+            "@type": "Organization",
+            "name": "Codevora",
+            "url": "https://codevora.id",
+          },
+          ...(item.live_url ? { "url": item.live_url } : {}),
+        },
+      })),
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <HomePageClient services={services} portfolios={portfolios} />
+    </>
+  );
 }

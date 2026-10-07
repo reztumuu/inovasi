@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import PortfolioPageClient from '@/components/PortfolioPageClient';
 
 interface PortfolioItem {
@@ -47,9 +48,20 @@ async function getPortfolios(): Promise<PortfolioItem[]> {
   }
 }
 
-export const metadata = {
-  title: 'Portfolio',
-  description: 'Explore our portfolio of premium web systems, mobile applications, and secure cloud solutions.',
+export const metadata: Metadata = {
+  title: 'Portofolio Jasa Pembuatan Website & Aplikasi',
+  description: 'Lihat studi kasus dan portofolio proyek jasa pembuatan website profesional, toko online e-commerce, web application, dan aplikasi mobile yang telah dirilis oleh Codevora.',
+  keywords: [
+    'portofolio pembuatan website',
+    'contoh website company profile',
+    'portfolio web development',
+    'hasil karya web developer',
+    'proyek software house',
+    'codevora portfolio'
+  ],
+  alternates: {
+    canonical: 'https://codevora.id/portfolio',
+  },
 };
 
 export default async function PortfolioPage() {

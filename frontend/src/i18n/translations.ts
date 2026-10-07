@@ -10,11 +10,11 @@ export const translations = {
       getInTouch: 'Get in Touch',
     },
     hero: {
-      badge: 'Premium Software Engineering Studio',
-      titlePart1: 'We build ',
-      titleSpan: 'software',
-      titlePart2: ' that scales & inspires',
-      subtitle: 'Custom web portals, high-performance mobile apps, and secure cloud infrastructure — engineered for companies ready to grow systematically.',
+      badge: 'Professional Web Development & Software Studio',
+      titlePart1: 'Custom ',
+      titleSpan: 'Web Development',
+      titlePart2: ' & Scalable Software Systems',
+      subtitle: 'Bespoke website creation, high-performance web applications, e-commerce systems, and cloud infrastructure engineered for modern businesses to rank and scale.',
       ctaStart: 'Start a Project',
       ctaWork: 'View Our Work',
       stats: {
@@ -29,8 +29,8 @@ export const translations = {
       title: 'Everything you need to ship great software',
       subtitle: 'State-of-the-art software systems optimized for performance, security, and exceptional user experiences.',
       web: {
-        title: 'Web Development',
-        desc: 'Custom portals, e-commerce & SaaS platforms built with Next.js and Laravel for maximum performance.'
+        title: 'Website & Web App Development',
+        desc: 'Custom website design and development, corporate portals, e-commerce, and high-performance SaaS applications built with Next.js & Laravel for maximum SEO speed.'
       },
       mobile: {
         title: 'Mobile Apps',
@@ -67,7 +67,7 @@ export const translations = {
       title: 'Trusted by industry leaders',
       list: [
         {
-          quote: 'InovasiTech completely re-architected our transaction services. API load times dropped 60%, and our engineering team had a seamless experience.',
+          quote: 'Codevora completely re-architected our transaction services. API load times dropped 60%, and our engineering team had a seamless experience.',
           author: 'Marcus Aurelius',
           role: 'VP of Engineering, Apex Retailers'
         },
@@ -153,11 +153,11 @@ export const translations = {
       getInTouch: 'Hubungi Kami',
     },
     hero: {
-      badge: 'Studio Rekayasa Perangkat Lunak Premium',
-      titlePart1: 'Kami membangun ',
-      titleSpan: 'perangkat lunak',
-      titlePart2: ' yang berskala & menginspirasi',
-      subtitle: 'Portal web kustom, aplikasi seluler berkinerja tinggi, dan infrastruktur cloud yang aman — dirancang untuk perusahaan yang siap tumbuh secara sistematis.',
+      badge: 'Jasa Pembuatan Website & Software Engineering Studio',
+      titlePart1: 'Jasa Pembuatan Website & ',
+      titleSpan: 'Software Modern',
+      titlePart2: ' Berkinerja Tinggi',
+      subtitle: 'Layanan jasa pembuatan website profesional, aplikasi web kustom, sistem e-commerce, dan aplikasi mobile. Dirancang dengan Next.js & Laravel untuk kecepatan maksimal dan mudah terindeks Google.',
       ctaStart: 'Mulai Proyek',
       ctaWork: 'Lihat Hasil Kerja Kami',
       stats: {
@@ -172,8 +172,8 @@ export const translations = {
       title: 'Semua yang Anda butuhkan untuk merilis software hebat',
       subtitle: 'Sistem perangkat lunak mutakhir yang dioptimalkan untuk kinerja, keamanan, dan pengalaman pengguna yang luar biasa.',
       web: {
-        title: 'Pengembangan Web',
-        desc: 'Portal kustom, platform e-commerce & SaaS yang dibangun dengan Next.js dan Laravel untuk kinerja maksimal.'
+        title: 'Jasa Pembuatan Website & Web App',
+        desc: 'Pembuatan website profesional, company profile perusahaan, toko online e-commerce, dan portal web SaaS modern menggunakan Next.js & Laravel yang cepat, aman, dan SEO-friendly.'
       },
       mobile: {
         title: 'Aplikasi Seluler',
@@ -210,7 +210,7 @@ export const translations = {
       title: 'Dipercaya oleh para pemimpin industri',
       list: [
         {
-          quote: 'InovasiTech sepenuhnya merancang ulang layanan transaksi kami. Waktu muat API turun 60%, dan tim rekayasa kami mendapatkan pengalaman yang mulus.',
+          quote: 'Codevora sepenuhnya merancang ulang layanan transaksi kami. Waktu muat API turun 60%, dan tim rekayasa kami mendapatkan pengalaman yang mulus.',
           author: 'Marcus Aurelius',
           role: 'VP Engineering, Apex Retailers'
         },
