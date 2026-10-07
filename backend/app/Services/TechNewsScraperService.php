@@ -207,6 +207,9 @@ class TechNewsScraperService
                     $markdown = $description . "\n\n## Overview\n\nThis article examines current technological developments and software engineering patterns in modern distributed ecosystems.";
                 }
 
+                // Strip ads / scripts / raw HTML leaked from the source markdown
+                $markdown = $this->sanitizeContent($markdown);
+
                 // Append official credit with clean markdown link
                 $author = $art['user']['name'] ?? 'Dev.to Tech';
                 $markdown .= "\n\n---\n\n*Original article published by [{$author} on Dev.to]({$artUrl})*";
@@ -249,6 +252,46 @@ class TechNewsScraperService
     }
 
     /**
+     * Strip ads, tracking scripts, and leftover raw HTML from scraped content
+     * so things like "(adsbygoogle = window.adsbygoogle || []).push({});"
+     * never leak into the stored article body.
+     */
+    private function sanitizeContent(string $content): string
+    {
+        // Remove full <script>...</script> blocks (ads, trackers, etc.)
+        $content = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $content);
+
+        // Remove self-closing or unclosed script tags
+        $content = preg_replace('/<script\b[^>]*>/i', '', $content);
+        $content = preg_replace('/<\/script>/i', '', $content);
+
+        // Remove <ins class="adsbygoogle">...</ins> ad units (with or without closing tag)
+        $content = preg_replace('/<ins\b[^>]*adsbygoogle[^>]*>.*?<\/ins>/is', '', $content);
+        $content = preg_replace('/<ins\b[^>]*adsbygoogle[^>]*>/i', '', $content);
+
+        // Remove leftover inline ad trigger, e.g. "(adsbygoogle = window.adsbygoogle || []).push({});"
+        $content = preg_replace(
+            '/\(\s*adsbygoogle\s*=\s*window\s*\.\s*adsbygoogle\s*(?:\|\||or)\s*\[\s*\]\s*\)\s*\.\s*push\s*\(\s*\{[^}]*\}\s*\)\s*;?/i',
+            '',
+            $content
+        );
+
+        // Remove generic google ad markup fragments / comments
+        $content = preg_replace('/<!--?\s*(?:google_|adsense|adsbygoogle)[^>]*>?/i', '', $content);
+        $content = preg_replace('/<div\b[^>]*id=["\']google_ads[^>]*>.*?<\/div>/is', '', $content);
+        $content = preg_replace('/<iframe\b[^>]*googlesyndication[^>]*>.*?<\/iframe>/is', '', $content);
+
+        // Remove leftover raw HTML tags that are not valid markdown
+        $content = preg_replace('/<\/?(?:script|ins|iframe|noscript|object|embed)\b[^>]*>/i', '', $content);
+
+        // Drop now-empty paragraphs and collapse excessive blank lines
+        $content = preg_replace('/<p>\s*<\/p>/i', '', $content);
+        $content = preg_replace("/\n{3,}/", "\n\n", $content);
+
+        return trim($content);
+    }
+
+    /**
      * Fetch and build structured article from Antara website.
      */
     private function fetchAntaraFullArticle(string $url, string $title, string $desc): array
@@ -274,6 +317,7 @@ class TechNewsScraperService
                 $validParagraphs = [];
                 foreach ($matches[1] as $p) {
                     $text = trim(strip_tags($p));
+                    $text = $this->sanitizeContent($text);
                     if (
                         strlen($text) > 40 &&
                         !str_starts_with($text, 'Baca juga') &&

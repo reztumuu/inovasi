@@ -260,6 +260,16 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
             const videoId = extractYoutubeId(rawBlock);
             let block = rawBlock.replace(/<!--\s*(?:FLAMES_)?YOUTUBE(?:_VIDEO)?_ID:([a-zA-Z0-9_-]+)\s*-->/gi, '').trim();
 
+            // Defensive guard: skip blocks that are leftover ad/tracker script
+            // text (e.g. "(adsbygoogle = window.adsbygoogle || []).push({});")
+            // so it can never render as visible article text.
+            if (/^\s*(?:<\/?(?:script|ins|iframe|noscript)\b[^>]*>|\.?adsbygoogle|window\.adsbygoogle|\(\s*adsbygoogle)/i.test(block)) {
+              return null;
+            }
+            if (/\(\s*adsbygoogle\s*=\s*window\s*\.\s*adsbygoogle\s*(?:\|\||or)\s*\[\s*\]\s*\)\s*\.\s*push\s*\(/i.test(block)) {
+              return null;
+            }
+
             if (block.match(/^https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/\S+$/i)) {
               block = '';
             }
