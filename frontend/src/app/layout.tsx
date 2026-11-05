@@ -307,6 +307,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
+        <script
+          src="https://quge5.com/88/tag.min.js"
+          data-zone="306342"
+          async
+          data-cfasync="false"
+        />
         {adsenseClientId && (
           <>
             <meta name="google-adsense-account" content={adsenseClientId} />
