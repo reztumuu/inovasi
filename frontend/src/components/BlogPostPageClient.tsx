@@ -183,18 +183,45 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
         }} />
       </div>
 
-      {/* Content Container & Desktop Sticky Sidebar */}
+      {/* Content Container & Desktop Sticky Sidebars (Left & Right) */}
       <div
         style={{
-          maxWidth: '1060px',
+          maxWidth: '1280px',
           margin: '0 auto',
           display: 'flex',
           justifyContent: 'center',
-          gap: '36px',
-          padding: '0 24px 100px',
+          gap: '28px',
+          padding: '0 20px 100px',
           position: 'relative',
         }}
       >
+        {/* Desktop Sticky Left Sidebar Ad (160x600) */}
+        <aside className="blog-sticky-sidebar">
+          <div
+            style={{
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '4px',
+              padding: '8px 0',
+              textAlign: 'center',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '10px',
+                color: 'var(--text-muted)',
+                display: 'block',
+                marginBottom: '6px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+              }}
+            >
+              Advertisement
+            </span>
+            <AdsterraBanner adKey="d487ca2647f9267ea6a9289d4ed8fb19" width={160} height={600} />
+          </div>
+        </aside>
+
         <article
           itemScope
           itemType="https://schema.org/BlogPosting"
