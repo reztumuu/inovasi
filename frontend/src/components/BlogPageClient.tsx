@@ -56,7 +56,7 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
       <section
         style={{
           position: 'relative',
-          padding: '120px 0 60px',
+          padding: '36px 0 50px',
           overflow: 'hidden',
           borderBottom: '1px solid var(--border-default)',
         }}
@@ -64,6 +64,16 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
         <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: 0.15, pointerEvents: 'none' }} />
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '1280px', margin: '0 auto', padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          {/* Banner Ad right above title */}
+          <div style={{ marginBottom: '16px', width: '100%' }}>
+            <div className="ad-desktop-only">
+              <AdsterraBanner adKey="2a328457c20675bd76774a48fc922454" width={728} height={90} style={{ margin: '0 auto' }} />
+            </div>
+            <div className="ad-mobile-only">
+              <AdsterraBanner adKey="9eb100efc200015bd2fbd64090d16042" width={300} height={250} style={{ margin: '0 auto' }} />
+            </div>
+          </div>
+
           <h1
             style={{
               fontSize: 'clamp(2.2rem, 5vw, 3.5rem)',
@@ -82,16 +92,6 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
           </p>
         </div>
       </section>
-
-      {/* Top Banner Ad */}
-      <div style={{ maxWidth: '1280px', margin: '32px auto 0', padding: '0 24px', textAlign: 'center' }}>
-        <div className="ad-desktop-only">
-          <AdsterraBanner adKey="2a328457c20675bd76774a48fc922454" width={728} height={90} />
-        </div>
-        <div className="ad-mobile-only">
-          <AdsterraBanner adKey="9eb100efc200015bd2fbd64090d16042" width={300} height={250} />
-        </div>
-      </div>
 
       {/* Posts Grid */}
       <section ref={postsSectionRef} style={{ padding: '48px 0 100px' }}>
