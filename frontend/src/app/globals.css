@@ -114,7 +114,7 @@ body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-x: clip;
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -710,10 +710,13 @@ footer li:has(a[href*="linkedin.com/in/reztumu/"]) {
 @media (min-width: 1200px) {
   .blog-sticky-sidebar {
     display: block !important;
+    position: -webkit-sticky;
     position: sticky;
     top: 96px;
+    align-self: flex-start;
     width: 160px;
-    height: fit-content;
+    height: auto;
     flex-shrink: 0;
+    z-index: 30;
   }
 }

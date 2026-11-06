@@ -168,7 +168,7 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
   const blocks = post.content.split(/\n{2,}/);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-base)', transition: 'background-color 0.3s ease', overflowX: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-base)', transition: 'background-color 0.3s ease' }}>
       {/* Hero Image Banner */}
       <div style={{ position: 'relative', width: '100%', height: 'clamp(260px, 40vh, 400px)', overflow: 'hidden' }}>
         <img
@@ -190,6 +190,7 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
           margin: '0 auto',
           display: 'flex',
           justifyContent: 'center',
+          alignItems: 'flex-start',
           gap: '28px',
           padding: '0 20px 100px',
           position: 'relative',
