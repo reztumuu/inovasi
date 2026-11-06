@@ -4,6 +4,8 @@ import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Calendar, User, ArrowRight, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import AdsterraBanner from '@/components/ads/AdsterraBanner';
+import AdsterraNativeBanner from '@/components/ads/AdsterraNativeBanner';
 
 interface BlogPost {
   id: number;
@@ -80,6 +82,16 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
           </p>
         </div>
       </section>
+
+      {/* Top Banner Ad */}
+      <div style={{ maxWidth: '1280px', margin: '32px auto 0', padding: '0 24px', textAlign: 'center' }}>
+        <div className="ad-desktop-only">
+          <AdsterraBanner adKey="2a328457c20675bd76774a48fc922454" width={728} height={90} />
+        </div>
+        <div className="ad-mobile-only">
+          <AdsterraBanner adKey="9eb100efc200015bd2fbd64090d16042" width={300} height={250} />
+        </div>
+      </div>
 
       {/* Posts Grid */}
       <section ref={postsSectionRef} style={{ padding: '48px 0 100px' }}>
@@ -191,6 +203,9 @@ export default function BlogPageClient({ posts }: BlogPageClientProps) {
                   </Link>
                 ))}
               </div>
+
+              {/* Native Banner Ad */}
+              <AdsterraNativeBanner style={{ margin: '48px 0 24px' }} />
 
               {/* Centered Pagination */}
               {totalPages > 1 && (

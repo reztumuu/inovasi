@@ -683,3 +683,37 @@ footer li:has(a[href*="linkedin.com/in/reztumu/"]) {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ============================================================
+   RESPONSIVE AD DISPLAY UTILITIES
+   ============================================================ */
+.ad-desktop-only {
+  display: block;
+}
+.ad-mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .ad-desktop-only {
+    display: none !important;
+  }
+  .ad-mobile-only {
+    display: block !important;
+  }
+}
+
+.blog-sticky-sidebar {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .blog-sticky-sidebar {
+    display: block !important;
+    position: sticky;
+    top: 96px;
+    width: 160px;
+    height: fit-content;
+    flex-shrink: 0;
+  }
+}

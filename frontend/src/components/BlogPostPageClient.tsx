@@ -4,6 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Calendar, User, ArrowLeft, Clock } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import AdsterraBanner from '@/components/ads/AdsterraBanner';
+import AdsterraNativeBanner from '@/components/ads/AdsterraNativeBanner';
 
 interface BlogPost {
   id: number;
@@ -181,12 +183,23 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
         }} />
       </div>
 
-      {/* Content Container */}
-      <article
-        itemScope
-        itemType="https://schema.org/BlogPosting"
-        style={{ maxWidth: '760px', margin: '0 auto', padding: '0 24px 100px', position: 'relative' }}
+      {/* Content Container & Desktop Sticky Sidebar */}
+      <div
+        style={{
+          maxWidth: '1060px',
+          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '36px',
+          padding: '0 24px 100px',
+          position: 'relative',
+        }}
       >
+        <article
+          itemScope
+          itemType="https://schema.org/BlogPosting"
+          style={{ maxWidth: '760px', width: '100%', position: 'relative' }}
+        >
         {/* Meta Header Card */}
         <div
           className="solid-card"
@@ -362,12 +375,25 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
           })}
         </div>
 
+        {/* Banner Ad after article content */}
+        <div style={{ margin: '36px 0 16px', textAlign: 'center' }}>
+          <div className="ad-desktop-only">
+            <AdsterraBanner adKey="2a328457c20675bd76774a48fc922454" width={728} height={90} />
+          </div>
+          <div className="ad-mobile-only">
+            <AdsterraBanner adKey="9eb100efc200015bd2fbd64090d16042" width={300} height={250} />
+          </div>
+        </div>
+
+        {/* Native Recommendation Ad */}
+        <AdsterraNativeBanner style={{ margin: '24px 0 32px' }} />
+
         {/* Dynamic bottom CTA banner */}
         <div
           className="solid-card"
           style={{
             padding: '32px',
-            marginTop: '56px',
+            marginTop: '32px',
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
@@ -389,6 +415,34 @@ export default function BlogPostPageClient({ post }: BlogPostPageClientProps) {
           </Link>
         </div>
       </article>
+
+      {/* Desktop Sticky Sidebar Ad (160x600) */}
+      <aside className="blog-sticky-sidebar">
+        <div
+          style={{
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: '4px',
+            padding: '8px 0',
+            textAlign: 'center',
+          }}
+        >
+          <span
+            style={{
+              fontSize: '10px',
+              color: 'var(--text-muted)',
+              display: 'block',
+              marginBottom: '6px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
+            Advertisement
+          </span>
+          <AdsterraBanner adKey="d487ca2647f9267ea6a9289d4ed8fb19" width={160} height={600} />
+        </div>
+      </aside>
+    </div>
     </div>
   );
 }
